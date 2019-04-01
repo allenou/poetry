@@ -47,7 +47,7 @@ li {
 }
 #app {
   display: flex;
-
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
