@@ -41,7 +41,7 @@ nav {
   width: 20%;
   text-align: center;
   color: #fff;
-  background-color: #232323;
+  background-color: #2c3e50;
 }
 nav h2 {
   margin: 30px 0;

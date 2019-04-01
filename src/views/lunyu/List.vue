@@ -3,10 +3,13 @@
     <div class="item" v-for="(item,index) in searchResults" :key="index">
       <h2 class="title">
         {{item.chapter}}
-        <i class="iconfont" v-if="speech" @click="speak(item.paragraphs)">&#xe753;</i>
+        <i class="iconfont" v-if="speech" @click="read(item.paragraphs)">&#xe753;</i>
       </h2>
       <ul>
-        <li v-for="(i,t) in item.paragraphs" :key="t" v-html="highlight(i,keyword)"></li>
+        <li v-for="(i,t) in item.paragraphs" :key="t">
+          <span v-html="highlight(i,keyword)"></span>
+          <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
+        </li>
       </ul>
     </div>
   </div>
@@ -34,30 +37,21 @@ export default {
         return (this.searchResults = this.lunyu);
       }
       const searchResults = this.lunyu.filter(item => {
-        if (item.chapter.includes(keyword)) {
+        if (
+          this.matchTitle(item.chapter) ||
+          this.matchContent(item.paragraphs)
+        ) {
           return item;
         }
       });
       this.searchResults = searchResults;
     }
   },
-  methods: {
-    checkContent(content) {
-      let result = false;
-      const keyword = this.keyword;
-      for (let i = 0; i < content.length; i++) {
-        if (content[i].includes(keyword)) {
-          result = true;
-          break;
-        }
-      }
-      return result;
-    }
-  }
+  methods: {}
 };
 </script>
 <style scoped>
-#list {
+ {
   text-align: left;
 }
 </style>

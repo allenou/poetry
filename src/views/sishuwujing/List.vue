@@ -4,21 +4,27 @@
       <template v-if="!item.length">
         <h2 class="title">
           {{item.chapter}}
-          <i class="iconfont" v-if="speech" @click="speak(item.paragraphs)">&#xe753;</i>
+          <i class="iconfont" v-if="speech" @click="read(item.paragraphs)">&#xe753;</i>
         </h2>
 
         <ul>
-          <li v-for="(i,t) in item.paragraphs" :key="t">{{i}}</li>
+          <li v-for="(i,t) in item.paragraphs" :key="t">
+            <span v-html="highlight(i,keyword)"></span>
+            <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
+          </li>
         </ul>
       </template>
       <template v-else>
         <div v-for="(i,t) in item" :key="t">
           <h2 class="title">
             {{i.chapter}}
-            <i class="iconfont" v-if="speech" @click="speak(i.paragraphs)">&#xe753;</i>
+            <i class="iconfont" v-if="speech" @click="read(i.paragraphs)">&#xe753;</i>
           </h2>
           <ul>
-            <li v-for="(it,ix) in i.paragraphs" :key="ix">{{it}}</li>
+            <li v-for="(it,ix) in i.paragraphs" :key="ix">
+              <span v-html="highlight(it,keyword)"></span>
+              <i class="iconfont" v-if="speech" @click="read(it)">&#xe753;</i>
+            </li>
           </ul>
         </div>
       </template>
@@ -55,9 +61,7 @@ export default {
       this.searchResults = searchResults;
     }
   },
-  methods: {
-  
-  }
+  methods: {}
 };
 </script>
 paragraphs
