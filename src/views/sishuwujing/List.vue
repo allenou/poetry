@@ -64,4 +64,3 @@ export default {
   methods: {}
 };
 </script>
-paragraphs
