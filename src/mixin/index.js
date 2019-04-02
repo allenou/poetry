@@ -6,7 +6,6 @@ const mixin = {
         }
     },
     methods: {
-
         read(content) {
             const ssu = new window.SpeechSynthesisUtterance();
             ssu.text = content;

@@ -16,12 +16,21 @@ export default {
       keyword: "",
       placeholder: "输入关键字进行搜索",
       isSpeaking: false,
+      lang: "zh-Hans",
       isRecognition: window.SpeechRecognition || window.webkitSpeechRecognition
     };
   },
   watch: {
     keyword(keyword) {
       this.$store.commit("setKeyword", keyword);
+    },
+    "$route.path"(path) {
+      this.keyword = "";
+      if (path.includes("shijing")) {
+        this.lang = "zh-Hans";
+      } else {
+        this.lang = "zh-Hant";
+      }
     }
   },
   methods: {
@@ -33,7 +42,7 @@ export default {
 
       const _this = this;
       const recognition = new SpeechRecognition();
-      recognition.lang = "zh-cmn-Hans";
+      recognition.lang = this.lang;
       recognition.interimResults = true;
       recognition.maxAlternatives = 7;
       recognition.start();

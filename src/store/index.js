@@ -41,13 +41,15 @@ const store = new Vuex.Store({
 
         },
         fetchSishuwujing({ commit }) {
-            const books = ['daxue', 'mengzi', 'zhongyong']
+            const books = ['daxue', 'zhongyong', 'mengzi']
             return new Promise((resolve, reject) => {
                 Promise.all(books.map(book =>
                     http.get(`/sishuwujing/${book}.json`).then(res => res.data)
                 )).then(data => {
-                    resolve(data)
-                    commit('setSishuwujing', data)
+                    const daxuezhongyong = data.splice(0, 2)
+                    const list = [...daxuezhongyong, ...data[0]]
+                    resolve(list)
+                    commit('setSishuwujing', list)
                 })
             })
 
