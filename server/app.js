@@ -5,7 +5,7 @@ const app = new Koa();
 
 
 app.use(static(
-    path.join(__dirname, './json')
+    path.join(__dirname, '/')
 ))
 
 app.listen(3000, () => {

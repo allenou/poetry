@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 const router = new Router({
-    base: process.env.BASE_URL,
+    base: 'poerty',
     fallback: true,
 
     scrollBehavior(to, from, savedPosition) {

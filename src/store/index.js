@@ -2,7 +2,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import http from '../http'
-import pinyin from "pinyin";
 
 Vue.use(Vuex)
 
