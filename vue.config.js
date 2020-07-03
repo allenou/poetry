@@ -1,3 +1,4 @@
 module.exports = {
-    outputDir: 'docs'
+    publicPath: 'poetry',
+    outputDir: 'docs',
 }
