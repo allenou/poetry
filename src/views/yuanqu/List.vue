@@ -2,10 +2,9 @@
   <div id="list">
     <div class="item" v-for="(item,index) in list" :key="index">
       <h2 class="title">
-        {{item.chapter}}
-        <i class="iconfont" v-if="speech" @click="read(item.paragraphs)">&#xe753;</i>
+        {{item.title}}
+        <i class="iconfont" v-if="speech" @click="read(item.title)">&#xe753;</i>
       </h2>
-
       <ul>
         <li v-for="(i,t) in item.paragraphs" :key="t">
           <span v-html="highlight(i,keyword)"></span>
@@ -17,23 +16,19 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import daxue from "chinese-poetry/chinese-poetry/sishuwujing/daxue.json";
-import zhongyong from "chinese-poetry/chinese-poetry/sishuwujing/zhongyong.json";
-import mengzi from "chinese-poetry/chinese-poetry/sishuwujing/mengzi.json";
+import articles from "chinese-poetry/chinese-poetry/yuanqu/yuanqu.json";
 
 export default {
   data() {
     return {
-      articles: [daxue, zhongyong, ...mengzi],
-      list: []
+      articles,
+      list: articles
     };
   },
   computed: {
     ...mapGetters(["keyword"])
   },
-  created() {
-    this.list = this.articles;
-  },
+
   watch: {
     keyword(text) {
       this.list = !text
@@ -47,3 +42,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+#list {
+  text-align: center;
+}
+</style>

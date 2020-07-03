@@ -1,16 +1,13 @@
 <template>
   <nav>
-    <h2>中国诗词</h2>
-    <ul @click="nav($event)">
-      <li data-nav="shijing">
-        <router-link to="/shijing" exact-active-class="active">《诗经》</router-link>
-      </li>
-      <li data-nav="lunyu">
-        <router-link to="/lunyu" exact-active-class="active">《论语》</router-link>
-      </li>
-
-      <li data-nav="sishuwujing">
-        <router-link to="/sishuwujing" exact-active-class="active">《四书五经》</router-link>
+    <h2 @click="()=>$router.push('/')">中文诗词</h2>
+    <ul>
+      <li v-for="(item,index) in routers" :key="index">
+        <router-link
+          v-if="item.meta"
+          :to="item.path"
+          exact-active-class="active"
+        >《{{item.meta.title}}》</router-link>
       </li>
     </ul>
     <GitHubBadge slug="allenou/poerty" fill="#fff" class="badge"></GitHubBadge>
@@ -18,16 +15,16 @@
 </template>
 <script>
 import GitHubBadge from "vue-github-badge";
+import { routers } from "../config";
+
 export default {
   components: {
     GitHubBadge
   },
-  methods: {
-    nav(e) {
-      if (e.target.tagName === "LI") {
-        this.$emit("nav", e.target.dataset.nav);
-      }
-    }
+  data() {
+    return {
+      routers: routers
+    };
   }
 };
 </script>
@@ -45,6 +42,7 @@ nav {
 }
 nav h2 {
   margin: 30px 0;
+  cursor: pointer;
 }
 ul {
   padding-left: 0;

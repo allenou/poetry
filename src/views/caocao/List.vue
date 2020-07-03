@@ -4,11 +4,11 @@
       <div class="item" v-for="(item,index) in list" :key="index">
         <h2>
           {{item.title}}
-          <i class="iconfont" v-if="speech" @click="read(item.content)">&#xe753;</i>
+          <i class="iconfont" v-if="speech" @click="read(item.paragraphs)">&#xe753;</i>
         </h2>
 
         <ul>
-          <li v-for="(i,t) in item.content" :key="t">
+          <li v-for="(i,t) in item.paragraphs" :key="t">
             <span v-html="highlight(i,keyword)"></span>
             <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
           </li>
@@ -19,7 +19,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import articles from "chinese-poetry/chinese-poetry/shijing/shijing.json";
+import articles from "chinese-poetry/chinese-poetry/caocaoshiji/caocao.json";
 
 export default {
   data() {

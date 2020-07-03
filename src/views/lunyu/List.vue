@@ -1,6 +1,6 @@
 <template>
   <div id="list">
-    <div class="item" v-for="(item,index) in searchResults" :key="index">
+    <div class="item" v-for="(item,index) in list" :key="index">
       <h2 class="title">
         {{item.chapter}}
         <i class="iconfont" v-if="speech" @click="read(item.paragraphs)">&#xe753;</i>
@@ -16,42 +16,34 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import articles from "chinese-poetry/chinese-poetry/lunyu/lunyu.json";
 
 export default {
   data() {
     return {
-      searchResults: []
+      articles,
+      list: articles
     };
   },
   computed: {
-    ...mapGetters(["lunyu", "keyword"])
+    ...mapGetters(["keyword"])
   },
-  created() {
-    this.$store.dispatch("fetchLunyu").then(list => {
-      this.searchResults = list;
-    });
-  },
+
   watch: {
-    "$store.state.keyword"(keyword) {
-      if (!keyword) {
-        return (this.searchResults = this.lunyu);
-      }
-      const searchResults = this.lunyu.filter(item => {
-        if (
-          this.matchTitle(item.chapter) ||
-          this.matchContent(item.paragraphs)
-        ) {
-          return item;
-        }
-      });
-      this.searchResults = searchResults;
+    keyword(text) {
+      this.list = !text
+        ? this.articles
+        : this.articles.filter(
+            item =>
+              this.matchTitle(item.chapter) ||
+              this.matchContent(item.paragraphs)
+          );
     }
-  },
-  methods: {}
+  }
 };
 </script>
 <style scoped>
- {
-  text-align: left;
+#list {
+  text-align: center;
 }
 </style>

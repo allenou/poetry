@@ -2,13 +2,12 @@
   <div id="list">
     <section>
       <div class="item" v-for="(item,index) in list" :key="index">
-        <h2>
-          {{item.title}}
+        <p style="position:relative">
+          <b style="display:inline-block;">{{item.content}}</b>
           <i class="iconfont" v-if="speech" @click="read(item.content)">&#xe753;</i>
-        </h2>
-
+        </p>
         <ul>
-          <li v-for="(i,t) in item.content" :key="t">
+          <li v-for="(i,t) in item.comment" :key="t">
             <span v-html="highlight(i,keyword)"></span>
             <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
           </li>
@@ -19,7 +18,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import articles from "chinese-poetry/chinese-poetry/shijing/shijing.json";
+import articles from "chinese-poetry/chinese-poetry/youmengying/youmengying.json";
 
 export default {
   data() {
@@ -44,7 +43,7 @@ export default {
 };
 </script>
 <style scoped>
-#list {
-  text-align: center;
+#list p:hover .iconfont {
+  right: inherit;
 }
 </style>

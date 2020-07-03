@@ -1,5 +1,5 @@
 {
-  "name": "ps",
+  "name": "poetry",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "chinese-poetry": "^1.3.0",
     "pinyin": "^2.8.3",
     "vue": "^2.6.6",
     "vue-github-badge": "^1.0.1",

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Aside @nav="fetchPoertys($event)"></Aside>
+    <Aside></Aside>
     <main>
       <SearchBar></SearchBar>
       <keep-alive>
@@ -18,12 +18,6 @@ export default {
   components: {
     Aside,
     SearchBar
-  },
-  data() {
-    return {
-      currentNav: "",
-      placeholder: ""
-    };
   }
 };
 </script>
