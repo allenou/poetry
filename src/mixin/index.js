@@ -1,4 +1,9 @@
+import VirtualList from "../components/VirtualList";
+
 const mixin = {
+    components: {
+        VirtualList
+    },
     data() {
         return {
             speech: window.SpeechSynthesisUtterance

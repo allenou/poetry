@@ -1,12 +1,6 @@
 <template>
   <header>
-    <input type="search" :placeholder="placeholder" v-model="keyword">
-    <i
-      class="iconfont"
-      :class="{'speaking':isSpeaking}"
-      @click="speak"
-      v-if="isRecognition"
-    >&#xe65a;</i>
+    <input type="search" :placeholder="placeholder" v-model="keyword" />
   </header>
 </template>
 <script>
@@ -14,54 +8,12 @@ export default {
   data() {
     return {
       keyword: "",
-      placeholder: "输入关键字进行搜索",
-      isSpeaking: false,
-      lang: "zh-Hans",
-      isRecognition: window.SpeechRecognition || window.webkitSpeechRecognition
+      placeholder: "输入关键字进行搜索"
     };
   },
   watch: {
     keyword(keyword) {
       this.$store.commit("setKeyword", keyword);
-    },
-    "$route.path"(path) {
-      this.keyword = "";
-      if (path.includes("shijing")) {
-        this.lang = "zh-Hans";
-      } else {
-        this.lang = "zh-Hant";
-      }
-    }
-  },
-  methods: {
-    speak() {
-      this.isSpeaking = true;
-      this.placeholder = "说出关键字进行搜索";
-      window.SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      const _this = this;
-      const recognition = new SpeechRecognition();
-      recognition.lang = this.lang;
-      recognition.interimResults = true;
-      recognition.maxAlternatives = 7;
-      recognition.start();
-
-      recognition.onresult = function(e) {
-        const transcript = Array.from(e.results)
-          .map(result => result[0])
-          .map(result => result.transcript)
-          .join("");
-
-        if (e.results[0].isFinal) {
-          _this.keyword = transcript;
-          console.log("You said: ", transcript);
-        }
-      };
-      recognition.onend = function() {
-        _this.isSpeaking = false;
-        _this.placeholder = "输入关键字进行搜索";
-      };
     }
   }
 };

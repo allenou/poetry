@@ -1,20 +1,22 @@
 <template>
   <div id="list">
-    <section>
-      <div class="item" v-for="(item,index) in list" :key="index">
+      <VirtualList :list="list" v-slot:default="slotProps">
         <h2>
-          {{item.title}}
-          <i class="iconfont" v-if="speech" @click="read(item.content)">&#xe753;</i>
+          {{slotProps.item.title}}
+          <i
+            class="iconfont"
+            v-if="speech"
+            @click="read(slotProps.item.content)"
+          >&#xe753;</i>
         </h2>
 
         <ul>
-          <li v-for="(i,t) in item.content" :key="t">
+          <li v-for="(i,t) in slotProps.item.content" :key="t">
             <span v-html="highlight(i,keyword)"></span>
             <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
           </li>
         </ul>
-      </div>
-    </section>
+      </VirtualList>
   </div>
 </template>
 <script>
@@ -30,6 +32,9 @@ export default {
   },
   computed: {
     ...mapGetters(["keyword"])
+  },
+  created(){
+  console.log(111)
   },
   watch: {
     keyword(text) {

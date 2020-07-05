@@ -1,17 +1,21 @@
 <template>
   <div id="list">
-    <div class="item" v-for="(item,index) in list" :key="index">
+    <VirtualList :list="list" v-slot:default="slotProps">
       <h2 class="title">
-        {{item.title}}
-        <i class="iconfont" v-if="speech" @click="read(item.title)">&#xe753;</i>
+        {{slotProps.item.title}}
+        <i
+          class="iconfont"
+          v-if="speech"
+          @click="read(slotProps.item.title)"
+        >&#xe753;</i>
       </h2>
       <ul>
-        <li v-for="(i,t) in item.paragraphs" :key="t">
+        <li v-for="(i,t) in slotProps.item.paragraphs" :key="t">
           <span v-html="highlight(i,keyword)"></span>
           <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
         </li>
       </ul>
-    </div>
+    </VirtualList>
   </div>
 </template>
 <script>

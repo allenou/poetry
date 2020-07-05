@@ -1,19 +1,17 @@
 <template>
   <div id="list">
-    <section>
-      <div class="item" v-for="(item,index) in list" :key="index">
-        <p style="position:relative">
-          <b style="display:inline-block;">{{item.content}}</b>
-          <i class="iconfont" v-if="speech" @click="read(item.content)">&#xe753;</i>
-        </p>
-        <ul>
-          <li v-for="(i,t) in item.comment" :key="t">
-            <span v-html="highlight(i,keyword)"></span>
-            <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
-          </li>
-        </ul>
-      </div>
-    </section>
+    <VirtualList :list="list" v-slot:default="slotProps">
+      <p style="position:relative">
+        <b style="display:inline-block;">{{slotProps.item.content}}</b>
+        <i class="iconfont" v-if="speech" @click="read(slotProps.item.content)">&#xe753;</i>
+      </p>
+      <ul>
+        <li v-for="(i,t) in slotProps.item.comment" :key="t">
+          <span v-html="highlight(i,keyword)"></span>
+          <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
+        </li>
+      </ul>
+    </VirtualList>
   </div>
 </template>
 <script>
