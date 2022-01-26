@@ -1,69 +1,110 @@
 <template>
   <nav>
-    <h2 @click="()=>$router.push('/')">中文诗词</h2>
     <ul>
-      <li v-for="(item,index) in routers" :key="index">
-        <router-link
+      <li v-for="(item, index) in books" :key="index">
+        <h1
+          class="title"
           v-if="item.meta"
           :to="item.path"
-          exact-active-class="active"
-        >《{{item.meta.title}}》</router-link>
+          @click="handleClick(item, index)"
+        >
+          <span v-for="(itm, indx) in item.meta.title" :key="indx">
+            {{ itm }}
+          </span>
+        </h1>
       </li>
     </ul>
-    <GitHubBadge slug="allenou/poerty" fill="#fff" class="badge"></GitHubBadge>
   </nav>
 </template>
 <script>
-import GitHubBadge from "vue-github-badge";
+import "animate.css";
+
 import { routers } from "../config";
 
 export default {
-  components: {
-    GitHubBadge
-  },
   data() {
     return {
-      routers: routers
+      books: routers,
     };
-  }
+  },
+  methods: {
+    handleClick(book, index) {
+      if (book.meta.title !== this.books[0].meta.title) {
+        this.books.splice(index, 1);
+        this.books.unshift(book);
+      }
+    },
+  },
 };
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 nav {
+  overflow: hidden;
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 999;
+  width: 100px;
   height: 100%;
-  width: 20%;
   text-align: center;
-  color: #fff;
-  background-color: #2c3e50;
+  background-color: #3a4d83;
 }
-nav h2 {
+nav:hover {
+  width: auto;
+  width: 700px !important;
+}
+/* nav:hover .li {
+  background-color: #fff;
+} */
+/* nav h2 {
   margin: 30px 0;
   cursor: pointer;
-}
+} */
 ul {
+  margin: 0;
+  display: flex;
+  height: 100vh;
   padding-left: 0;
   list-style: none;
 }
-ul a {
-  display: block;
+ul li {
+  width: 100px;
+  height: 100%;
+  display: flex;
+  justify-items: center;
+  align-items: center;
   color: #fff;
-  padding: 10px 0;
+}
+ul li:hover {
+  color: #000;
+  background-color: #bbb5ac;
+}
+ul .title {
+  /* display: block; */
+  /* writing-mode: vertical-lr; */
+
+  width: 100px;
+
+  /* padding: 10px 0; */
   cursor: pointer;
+  font-size: 30px;
+  text-align: center;
   text-decoration: none;
+}
+span {
+  display: block;
 }
 /* ul a:hover {
   color: #232323;
   background-color: #fff;
 } */
 nav .badge {
-  position: absolute !important;
+  /* position: absolute !important;
   bottom: 1rem;
-  top: unset !important;
-  left: 1rem;
+  right: unset !important;
+  top: unset !important; */
+  /* left: 1rem; */
 }
 .router-link-active {
   color: #232323;

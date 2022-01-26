@@ -1,8 +1,8 @@
 <template>
-  <div id="list" class="text-left">
+  <div id="list">
     <VirtualList :list="list" v-slot:default="slotProps">
-      <h2 class="title">
-        {{slotProps.item.chapter}}
+      <h2>
+        {{slotProps.item.title}}
         <i
           class="iconfont"
           v-if="speech"
@@ -20,7 +20,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import articles from "chinese-poetry/chinese-poetry/lunyu/lunyu.json";
+import articles from "chinese-poetry/chinese-poetry/caocaoshiji/caocao.json";
 
 export default {
   data() {
@@ -32,17 +32,20 @@ export default {
   computed: {
     ...mapGetters(["keyword"])
   },
-
   watch: {
     keyword(text) {
       this.list = !text
         ? this.articles
         : this.articles.filter(
             item =>
-              this.matchTitle(item.chapter) ||
-              this.matchContent(item.paragraphs)
+              this.matchTitle(item.title) || this.matchContent(item.content)
           );
     }
   }
 };
 </script>
+<style scoped>
+#list {
+  text-align: center;
+}
+</style>

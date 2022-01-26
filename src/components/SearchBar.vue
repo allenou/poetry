@@ -1,44 +1,54 @@
 <template>
   <header>
-    <input type="search" :placeholder="placeholder" v-model="keyword" />
+    <div class="content">
+      <input :placeholder="placeholder" v-model="keyword" />
+    </div>
+    <GitHubBadge slug="allenou/poerty" fill="#333" class="badge"></GitHubBadge>
   </header>
 </template>
 <script>
+import GitHubBadge from "vue-github-badge";
 export default {
+  components: {
+    GitHubBadge,
+  },
   data() {
     return {
       keyword: "",
-      placeholder: "输入关键字进行搜索"
+      placeholder: "输入关键字进行搜索",
     };
   },
   watch: {
     keyword(keyword) {
       this.$store.commit("setKeyword", keyword);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 header {
+  position: relative;
   display: flex;
   align-items: center;
-  /* position: fixed;
-  top: 0; */
-  width: 80%;
-  margin: 30px auto;
-  padding-right: 10px;
-  /* margin: 30px; */
-  /* margin: auto; */
-  text-align: center;
-  /* background-color: #232323; */
+  justify-content: center;
+  /* position: fixed; */
+  top: 0;
+  width: 100%;
+  /* margin-left: 100px; */
+  padding: 30px 0;
+}
+.content {
+  width: 66%;
+  /* margin: 30px auto; */
+  padding: 6px;
+
   background-color: #fff;
 }
-header input {
-  flex: 1;
+input {
+  width: 100%;
   height: 36px;
 
-  /* margin: auto; */
   border: none;
   outline: none;
   text-indent: 14px;
@@ -48,5 +58,11 @@ header input {
 }
 .speaking {
   color: #e74c3c;
+}
+.badge {
+  position: absolute !important;
+  /* bottom: 1rem; */
+  /* right: unset !important; */
+  top: unset !important;
 }
 </style>

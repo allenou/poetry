@@ -1,12 +1,15 @@
 <template>
   <div id="app">
     <Aside></Aside>
-    <main>
-      <SearchBar></SearchBar>
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
-    </main>
+
+    <div id="container">
+      <main>
+        <SearchBar></SearchBar>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -17,77 +20,74 @@ export default {
   name: "app",
   components: {
     Aside,
-    SearchBar
-  }
+    SearchBar,
+  },
 };
 </script>
 
-<style>
-* {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
+<style lang="postcss" >
 html,
 body {
   height: 100%;
   background-color: #ecf0f1;
-  font-family: cursive;
+  font-family: "宋体";
 }
-ul {
-  padding-left: 0;
-}
-li {
-  list-style: none;
+h2 {
+  margin-bottom: 20px !important;
+  font-size: 24px !important;
+  font-weight: bold !important;
 }
 #app {
+  position: relative;
   display: flex;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
   color: #2c3e50;
-  /* background-color: #efefef; */
+}
+#container {
+  position: relative;
+
+  width: 100%;
+  margin-left: 100px;
 }
 main {
   width: 80%;
-  /* margin-top: 10%; */
-  /* background-color: #fff; */
-  margin-left: 20%;
+  margin: auto;
 }
 #list {
-  margin-top: 88px;
+  margin-top: 168px;
   padding: 0 10%;
+  text-align: center;
 }
-#list .item {
+/* #list .item {
   margin-bottom: 66px;
+} */
+#list .header {
+  margin-top: 66px;
+  line-height: 50px;
 }
-#list .item li {
+#list .header .title {
   position: relative;
-
+  font-size: 28px;
+  font-weight: bold;
+}
+#list li {
   line-height: 30px;
 }
-#list h2 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-#list h2 .iconfont {
-  margin-left: 60px;
-}
-/* .title {
-  text-align: center;
-} */
+
 #list .iconfont {
   position: absolute;
-
   right: -9999px;
-  /* margin-left: 50px; */
   cursor: pointer;
 }
 
-#list h2:hover .iconfont,
+#list .header:hover .iconfont,
 #list li:hover .iconfont {
   right: inherit;
+  margin-left: 20px;
+}
+.keyword {
+  font-size: 20px;
 }
 </style>
