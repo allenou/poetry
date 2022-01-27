@@ -1,15 +1,15 @@
 <template>
-  <nav>
+  <nav :class="{ open: open }">
     <ul>
-      <li v-for="(item, index) in books" :key="index">
-        <h1
-          class="title"
-          v-if="item.meta"
-          :to="item.path"
-          @click="handleClick(item, index)"
-        >
-          <span v-for="(itm, indx) in item.meta.title" :key="indx">
-            {{ itm }}
+      <li
+        v-for="(item, index) in books"
+        :key="index"
+        :class="{ active: open && index === 0 }"
+        @click="handleClick(item, index)"
+      >
+        <h1 class="title" v-if="item.meta" :to="item.path">
+          <span v-for="(word, indx) in item.meta.title" :key="indx">
+            {{ word }}
           </span>
         </h1>
       </li>
@@ -25,13 +25,18 @@ export default {
   data() {
     return {
       books: routers,
+      open: false,
     };
   },
   methods: {
     handleClick(book, index) {
-      if (book.meta.title !== this.books[0].meta.title) {
+      if (book.meta.title === this.books[0].meta.title) {
+        this.open = !this.open;
+      } else {
         this.books.splice(index, 1);
         this.books.unshift(book);
+        this.$router.push(book.path);
+        this.open = false;
       }
     },
   },
@@ -45,15 +50,21 @@ nav {
   top: 0;
   left: 0;
   z-index: 999;
+
   width: 100px;
   height: 100%;
   text-align: center;
   background-color: #3a4d83;
 }
-nav:hover {
+.open {
+  width: 700px !important;
+  animation: slideInLeft;
+  animation-duration: 500ms;
+}
+/* nav:hover {
   width: auto;
   width: 700px !important;
-}
+} */
 /* nav:hover .li {
   background-color: #fff;
 } */
@@ -74,9 +85,11 @@ ul li {
   display: flex;
   justify-items: center;
   align-items: center;
+  cursor: pointer;
   color: #fff;
 }
-ul li:hover {
+ul li:hover,
+.active {
   color: #000;
   background-color: #bbb5ac;
 }

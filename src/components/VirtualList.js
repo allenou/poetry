@@ -16,6 +16,11 @@ export default {
   created() {
     this.loopRender();
   },
+  watch: {
+    list(list) {
+      console.log(list);
+    },
+  },
   methods: {
     loopRender() {
       let globalId;

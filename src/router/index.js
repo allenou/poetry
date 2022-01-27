@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import {routers} from '../config'
 
 Vue.use(Router)
+
 const router = new Router({
     base: 'poetry',
     fallback: true,

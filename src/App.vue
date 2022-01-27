@@ -50,13 +50,14 @@ h2 {
 
   width: 100%;
   margin-left: 100px;
+  padding-bottom: 88px;
 }
 main {
   width: 80%;
   margin: auto;
 }
 #list {
-  margin-top: 168px;
+  margin-top: 128px;
   padding: 0 10%;
   text-align: center;
 }
@@ -71,6 +72,9 @@ main {
   position: relative;
   font-size: 28px;
   font-weight: bold;
+}
+#list .header .keyword {
+  font-size: 36px;
 }
 #list li {
   line-height: 30px;

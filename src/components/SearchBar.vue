@@ -1,25 +1,29 @@
 <template>
   <header>
     <div class="content">
-      <input :placeholder="placeholder" v-model="keyword" />
+      <input :placeholder="placeholder" v-model="word" />
     </div>
     <GitHubBadge slug="allenou/poerty" fill="#333" class="badge"></GitHubBadge>
   </header>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import GitHubBadge from "vue-github-badge";
 export default {
   components: {
     GitHubBadge,
   },
+  computed: {
+    ...mapGetters(["keyword"]),
+  },
   data() {
     return {
-      keyword: "",
+      word: "",
       placeholder: "输入关键字进行搜索",
     };
   },
   watch: {
-    keyword(keyword) {
+    word(keyword) {
       this.$store.commit("setKeyword", keyword);
     },
   },
