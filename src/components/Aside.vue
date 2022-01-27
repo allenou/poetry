@@ -7,6 +7,7 @@
         :class="{ active: open && index === 0 }"
         @click="handleClick(item, index)"
       >
+        <!-- @click="handleClick(item, index)" -->
         <h1 class="title" v-if="item.meta" :to="item.path">
           <span v-for="(word, indx) in item.meta.title" :key="indx">
             {{ word }}
@@ -88,11 +89,11 @@ ul li {
   cursor: pointer;
   color: #fff;
 }
-ul li:hover,
+/* ul li:hover,
 .active {
   color: #000;
   background-color: #bbb5ac;
-}
+} */
 ul .title {
   /* display: block; */
   /* writing-mode: vertical-lr; */

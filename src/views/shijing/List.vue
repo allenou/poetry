@@ -1,18 +1,12 @@
 <template>
-  <div>
-    <div id="list" v-for="(item, index) in list" :key="index">
-      <div class="header">
-        <span class="title" v-html="highlight(item.title, keyword)"></span>
-        <i class="iconfont" v-if="speech" @click="read(item.content)"
-          >&#xe753;</i
-        >
-      </div>
-
+  <div id="list">
+    <div class="content" v-for="(item, index) in list" :key="index">
       <ul>
-        <li v-for="(i, t) in item.content" :key="t">
-          <span v-html="highlight(i, keyword)"></span>
-          <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
-        </li>
+        <li class="title" v-html="highlight(item.title, keyword)"></li>
+        <template v-for="(i, t) in item.content">
+          <li :key="t" v-html="highlight(i, keyword)"></li>
+          <!-- <li v-html="pinyin(i)" :key="t"></li> -->
+        </template>
       </ul>
       <!-- <VirtualList :list="list" v-slot:default="slotProps">
         <div class="header">

@@ -1,5 +1,16 @@
 <template>
   <div id="list">
+    <div class="content" v-for="(item, index) in list" :key="index">
+      <ul>
+        <li class="title" v-html="highlight(item.title, keyword)"></li>
+        <template v-for="(i, t) in item.paragraphs">
+          <li :key="t" v-html="highlight(i, keyword)"></li>
+          <!-- <li v-html="pinyin(i)" :key="t"></li> -->
+        </template>
+      </ul>
+    </div>
+  </div>
+  <!-- <div id="list">
     <VirtualList :list="list" v-slot:default="slotProps">
       <h2>
         {{slotProps.item.title}}
@@ -16,7 +27,7 @@
         </li>
       </ul>
     </VirtualList>
-  </div>
+  </div> -->
 </template>
 <script>
 import { mapGetters } from "vuex";
@@ -26,22 +37,22 @@ export default {
   data() {
     return {
       articles,
-      list: articles
+      list: articles,
     };
   },
   computed: {
-    ...mapGetters(["keyword"])
+    ...mapGetters(["keyword"]),
   },
   watch: {
     keyword(text) {
       this.list = !text
         ? this.articles
         : this.articles.filter(
-            item =>
+            (item) =>
               this.matchTitle(item.title) || this.matchContent(item.content)
           );
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

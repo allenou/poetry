@@ -1,5 +1,17 @@
 <template>
   <div id="list">
+    <div class="content" v-for="(item, index) in list" :key="index">
+      <ul>
+        <li class="title" v-html="highlight(item.chapter, keyword)"></li>
+        <template v-for="(i, t) in item.paragraphs">
+          <li :key="t" v-html="highlight(i, keyword)"></li>
+          <!-- <li v-html="pinyin(i)" :key="t"></li> -->
+        </template>
+      </ul>
+    </div>
+  </div>
+  <!-- <div id="list">
+    
     <VirtualList :list="list" v-slot:default="slotProps">
       <h2 class="title">
         {{slotProps.item.chapter}}
@@ -16,8 +28,8 @@
           <i class="iconfont" v-if="speech" @click="read(i)">&#xe753;</i>
         </li>
       </ul>
-    </VirtualList>
-  </div>
+    </VirtualList> -->
+  <!-- </div> -->
 </template>
 <script>
 import { mapGetters } from "vuex";
@@ -29,11 +41,11 @@ export default {
   data() {
     return {
       articles: [daxue, zhongyong, ...mengzi],
-      list: []
+      list: [],
     };
   },
   computed: {
-    ...mapGetters(["keyword"])
+    ...mapGetters(["keyword"]),
   },
   created() {
     this.list = this.articles;
@@ -43,11 +55,11 @@ export default {
       this.list = !text
         ? this.articles
         : this.articles.filter(
-            item =>
+            (item) =>
               this.matchTitle(item.chapter) ||
               this.matchContent(item.paragraphs)
           );
-    }
-  }
+    },
+  },
 };
 </script>

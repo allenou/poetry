@@ -4,7 +4,7 @@
 
     <div id="container">
       <main>
-        <SearchBar></SearchBar>
+        <!-- <SearchBar></SearchBar> -->
         <keep-alive>
           <router-view></router-view>
         </keep-alive>
@@ -15,12 +15,12 @@
 
 <script>
 import Aside from "./components/Aside";
-import SearchBar from "./components/SearchBar";
+// import SearchBar from "./components/SearchBar";
 export default {
   name: "app",
   components: {
     Aside,
-    SearchBar,
+    // SearchBar,
   },
 };
 </script>
@@ -28,9 +28,11 @@ export default {
 <style lang="postcss" >
 html,
 body {
-  height: 100%;
+  /* overflow-x: scroll;
+  overflow-y: scroll; */
+
+  /* font-family: "宋体"; */
   background-color: #ecf0f1;
-  font-family: "宋体";
 }
 h2 {
   margin-bottom: 20px !important;
@@ -40,44 +42,62 @@ h2 {
 #app {
   position: relative;
   display: flex;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* overflow: hidden; */
+  /* -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
   color: #2c3e50;
 }
 #container {
   position: relative;
-
   width: 100%;
-  margin-left: 100px;
-  padding-bottom: 88px;
+  padding-top: 22px;
+  /* margin-left: 100px; */
 }
 main {
   width: 80%;
   margin: auto;
 }
 #list {
-  margin-top: 128px;
-  padding: 0 10%;
-  text-align: center;
+  display: flex;
+  /* padding: 0 10%; */
+  /* text-align: center; */
 }
 /* #list .item {
   margin-bottom: 66px;
 } */
+#list .content {
+  margin: 0 30px;
+}
+#list ul {
+  /* overflow: scroll; */
+  /* height: 600px; */
+  display: flex;
+}
 #list .header {
   margin-top: 66px;
   line-height: 50px;
 }
-#list .header .title {
+#list .title {
   position: relative;
   font-size: 28px;
   font-weight: bold;
+  margin-right:  10px;
 }
 #list .header .keyword {
   font-size: 36px;
 }
 #list li {
-  line-height: 30px;
+  /* overflow: hidden; */
+  display: flex;
+  writing-mode: vertical-lr;
+  padding: 0 10px;
+  /* float: left; */
+  /* word-wrap:break-word; */
+  /* padding: 0 30px; */
+}
+#list .word {
+  /* display: block; */
+  /* writing-mode: vertical-lr; */
 }
 
 #list .iconfont {
@@ -92,6 +112,17 @@ main {
   margin-left: 20px;
 }
 .keyword {
-  font-size: 20px;
+  /* font-size: 20px; */
+}
+
+ruby {
+  float: left;
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+}
+rt {
+  line-height: 20px;
+  writing-mode: horizontal-tb;
 }
 </style>

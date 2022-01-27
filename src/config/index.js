@@ -23,14 +23,14 @@ export const routers = [
       title: "四书五经",
     },
   },
-  {
-    path: "/youmengying",
-    component: () =>
-      import(/* webpackChunkName: "youmengying" */ "@/views/youmengying/List"),
-    meta: {
-      title: "幽梦影",
-    },
-  },
+  // {
+  //   path: "/youmengying",
+  //   component: () =>
+  //     import(/* webpackChunkName: "youmengying" */ "@/views/youmengying/List"),
+  //   meta: {
+  //     title: "幽梦影",
+  //   },
+  // },
   {
     path: "/caocao",
     component: () =>
@@ -39,14 +39,14 @@ export const routers = [
       title: "曹操诗集",
     },
   },
-  {
-    path: "/yuanqu",
-    component: () =>
-      import(/* webpackChunkName: "yuanqu" */ "@/views/yuanqu/List"),
-    meta: {
-      title: "元曲",
-    },
-  },
+  // {
+  //   path: "/yuanqu",
+  //   component: () =>
+  //     import(/* webpackChunkName: "yuanqu" */ "@/views/yuanqu/List"),
+  //   meta: {
+  //     title: "元曲",
+  //   },
+  // },
   {
     path: "/songci",
     component: () => import(/* webpackChunkName: "yuanqu" */ "@/views/ci/List"),
