@@ -1,4 +1,4 @@
-import { BASE_URL, PATHS } from "@/config"
+import { PATHS } from "@/config"
 import request from "@/utils/request"
 
 export type TRouteName = keyof typeof PATHS
@@ -12,9 +12,9 @@ function useArticle<T>(defaultData?: T) {
     loading.value = true
 
     const routeName = route.name as TRouteName
-    const url = `${BASE_URL}/${PATHS[routeName]}`
+    const url = `${PATHS[routeName]}`
     const res = await request<T>(url)
-    
+
     loading.value = false
 
     if (res) data.value = res

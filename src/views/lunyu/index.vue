@@ -7,12 +7,14 @@ const { data: articles, loading } = useArticle()
 <template>
   <Article :loading="loading">
     <section v-for="(article, i) in articles" :key="i">
-      <h1>
-        {{ article.chapter }}
-      </h1>
-      <p v-for="(line, j) in article.paragraphs" :key="j">
+      <div class="line">
+        <h4>
+          {{ article.chapter }}
+        </h4>
+      </div>
+      <div class="line" v-for="(line, j) in article.paragraphs" :key="j">
         {{ line }}
-      </p>
+      </div>
     </section>
   </Article>
 </template>

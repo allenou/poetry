@@ -21,12 +21,17 @@ const yuanqu = computed(() => {
 <template>
   <Article :loading="loading">
     <section v-for="(author, i) in Object.entries(yuanqu)" :key="i">
-      <h1>{{ author[0] }}</h1>
+      <div class="line">
+        <h3>{{ author[0] }}</h3>
+      </div>
       <section v-for="(article, j) in author[1]" :key="j">
-        <h2> {{ article.title }}</h2>
-        <p v-for="(line, k) in article.paragraphs" :key="k">
+        <div class="line">
+          <h4> {{ article.title }}</h4>
+        </div>
+
+        <div class="line" v-for="(line, k) in article.paragraphs" :key="k">
           {{ line }}
-        </p>
+        </div>
       </section>
     </section>
   </Article>

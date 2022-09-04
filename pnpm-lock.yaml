@@ -1,9 +1,12 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@iconify-json/carbon': ^1.1.7
   '@types/node': ^18.7.13
+  '@unocss/transformer-directives': ^0.45.14
   '@vitejs/plugin-vue': ^3.0.3
   axios: ^0.27.2
+  sass: ^1.54.8
   typescript: ^4.6.4
   unocss: ^0.45.13
   unplugin-auto-import: ^0.11.2
@@ -19,13 +22,16 @@ dependencies:
   vue-router: 4.1.5_vue@3.2.38
 
 devDependencies:
+  '@iconify-json/carbon': 1.1.7
   '@types/node': 18.7.14
+  '@unocss/transformer-directives': 0.45.14
   '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.38
+  sass: 1.54.8
   typescript: 4.8.2
   unocss: 0.45.14_vite@3.0.9
   unplugin-auto-import: 0.11.2_vite@3.0.9
   unplugin-vue-components: 0.22.4_vite@3.0.9+vue@3.2.38
-  vite: 3.0.9
+  vite: 3.0.9_sass@1.54.8
   vue-tsc: 0.39.5_typescript@4.8.2
 
 packages:
@@ -80,6 +86,12 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@iconify-json/carbon/1.1.7:
+    resolution: {integrity: sha512-QULSpNWKaX4auIbjITDynfALdJYvOOy/xZb+aLOqCgvpBcmbz5tbqvow4r25FWtVsi4FHVpNQ8vyJZXsD1Hlxg==}
+    dependencies:
+      '@iconify/types': 1.1.0
+    dev: true
 
   /@iconify/types/1.1.0:
     resolution: {integrity: sha512-Jh0llaK2LRXQoYsorIH8maClebsnzTcve+7U3rQUSnC11X4jtPnFuyatqFLvMxZ8MLG8dB4zfHsbPfuvxluONw==}
@@ -312,7 +324,7 @@ packages:
       '@unocss/scope': 0.45.14
       '@unocss/transformer-directives': 0.45.14
       magic-string: 0.26.3
-      vite: 3.0.9
+      vite: 3.0.9_sass@1.54.8
     dev: true
 
   /@vitejs/plugin-vue/3.0.3_vite@3.0.9+vue@3.2.38:
@@ -322,7 +334,7 @@ packages:
       vite: ^3.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 3.0.9
+      vite: 3.0.9_sass@1.54.8
       vue: 3.2.38
     dev: true
 
@@ -906,6 +918,10 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
+  /immutable/4.1.0:
+    resolution: {integrity: sha512-oNkuqVTA8jqG1Q6c+UglTOD1xhC1BtjKI7XkCXRkZHrN5m18/XsnUp8Q89GkQO/z+0WjonSvl0FLhDYftp46nQ==}
+    dev: true
+
   /is-binary-path/2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -1188,6 +1204,16 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
+  /sass/1.54.8:
+    resolution: {integrity: sha512-ib4JhLRRgbg6QVy6bsv5uJxnJMTS2soVcCp9Y88Extyy13A8vV0G1fAwujOzmNkFQbR3LvedudAMbtuNRPbQww==}
+    engines: {node: '>=12.0.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      immutable: 4.1.0
+      source-map-js: 1.0.2
+    dev: true
+
   /scule/0.3.2:
     resolution: {integrity: sha512-zIvPdjOH8fv8CgrPT5eqtxHQXmPNnV/vHJYffZhE43KZkvULvpCTvOt1HPlFaCZx287INL9qaqrZg34e8NgI4g==}
     dev: true
@@ -1412,12 +1438,12 @@ packages:
     dependencies:
       acorn: 8.8.0
       chokidar: 3.5.3
-      vite: 3.0.9
+      vite: 3.0.9_sass@1.54.8
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.4.4
     dev: true
 
-  /vite/3.0.9:
+  /vite/3.0.9_sass@1.54.8:
     resolution: {integrity: sha512-waYABTM+G6DBTCpYAxvevpG50UOlZuynR0ckTK5PawNVt7ebX6X7wNXHaGIO6wYYFXSM7/WcuFuO2QzhBB6aMw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1440,6 +1466,7 @@ packages:
       postcss: 8.4.16
       resolve: 1.22.1
       rollup: 2.77.3
+      sass: 1.54.8
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

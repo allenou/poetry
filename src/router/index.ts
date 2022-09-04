@@ -1,9 +1,9 @@
 
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router"
+import { createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from "vue-router"
 
 export const routes: RouteRecordRaw[] = [
   {
-    path: '/', name: 'shijing', meta: {
+    path: '/shijing', name: 'shijing', meta: {
       title: '诗经'
     }, component: () => import('@/views/shijing/index.vue'),
   },
@@ -22,15 +22,9 @@ export const routes: RouteRecordRaw[] = [
       title: '曹操诗集'
     }, component: () => import('@/views/caocao/index.vue'),
   },
-  // {
-  //   path: '/sishuwujing', meta: { title: '四书五经' },redirect:{
-  //     path:'/sishuwujing/daxue'
-  //   }, children: [
-  //     { path: 'daxue', name: 'daxue', meta: { title: '大学' }, component: SiShuWuJing },
-  //     { path: 'zhongyong', name: 'zhongyong', meta: { title: '中庸' }, component: SiShuWuJing },
-  //     { path: 'mengzi', name: 'mengzi', meta: { title: '孟子' }, component: SiShuWuJing }
-  //   ]
-  // },
+  {
+    path: '/sishuwujing', name: 'sishuwujing', meta: { title: '四书五经' }, component: () => import('@/views/sishuwujing/index.vue'),
+  },
   {
     path: '/youmengying', name: 'youmengying', meta: { title: '幽梦影' }, component: () => import('@/views/youmengying/index.vue'),
   },

@@ -4,38 +4,45 @@ import type { TShiJing, TShiJingChapter } from "@/typings";
 
 const { data, loading } = useArticle<TShiJing[]>([])
 
-
-const shijing = computed(() => {
-  let chapter: TShiJingChapter = {};
+const chapters = ref<TShiJingChapter>({})
+watch(() => data.value, () => {
+  if (!data.value) return
+  let obj: TShiJingChapter = {};
 
   for (let article of data.value) {
-    if (!chapter[article.chapter]) {
-      chapter[article.chapter] = { [article.section]: [article] }
+    if (!obj[article.chapter]) {
+      obj[article.chapter] = { [article.section]: [article] }
       continue
     }
 
-    if (!chapter[article.chapter][article.section]) {
-      chapter[article.chapter][article.section] = [article]
+    if (!obj[article.chapter][article.section]) {
+      obj[article.chapter][article.section] = [article]
     } else {
-      chapter[article.chapter][article.section].push(article)
+      obj[article.chapter][article.section].push(article)
     }
   }
-  return chapter
+
+  chapters.value = obj
 })
 
 
-
 </script>
-
+  
 <template>
   <Article :loading="loading">
-    <section v-for="(chapter, i) in Object.entries(shijing)" :key="i">
-      <h1> {{ chapter[0] }}</h1>
+    <section v-for="(chapter, i) in Object.entries(chapters)" :key="i">
+      <div class="line">
+        <h2> {{ chapter[0] }}</h2>
+      </div>
       <section v-for="(section, j) in Object.entries(chapter[1])" :key="j">
-        <h2> {{ section[0] }}</h2>
+        <div class="line">
+          <h3> {{ section[0] }}</h3>
+        </div>
         <section v-for="(article, k) in section[1]" :key="k">
-          <h3>{{ article.title }}</h3>
-          <p v-for="(line, l) in article.content" :key="l">{{ line }}</p>
+          <div class="line">
+            <h4>{{ article.title }}</h4>
+          </div>
+         <div class="line" v-for="(line, l) in article.content" :key="l">{{ line }}</div>
         </section>
       </section>
     </section>
