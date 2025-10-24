@@ -16,19 +16,19 @@ defineProps({
 
 <style  lang="scss">
 .wrap {
-  // overflow-y: auto;
-  // overflow-x: hidden;
-  // max-width: 1200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 1200px;
   margin: 0 auto;
-  // background: rgba(255, 255, 255, 0.95); 
-  // border-radius: 16px;
-  // box-shadow:
-  //   0 8px 32px rgba(139, 38, 53, 0.1),
-  //   inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(139, 38, 53, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
   padding: 4rem 5rem;
-  // max-height: calc(100vh - 6rem);
-  // position: relative;
-  // border: 1px solid rgba(139, 38, 53, 0.1);
+  max-height: calc(100vh - 6rem);
+  position: relative;
+  border: 1px solid rgba(139, 38, 53, 0.1);
 }
 
 .wrap::before {
@@ -65,17 +65,17 @@ h2 {
   position: relative;
 }
 
-// h2::after {
-//   content: '❦';
-//   position: absolute;
-//   bottom: -12px;
-//   left: 50%;
-//   transform: translateX(-50%);
-//   background: #faf7f0;
-//   padding: 0 1rem;
-//   color: #d4af37;
-//   font-size: 1.5rem;
-// }
+h2::after {
+  content: '❦';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #faf7f0;
+  padding: 0 1rem;
+  color: #d4af37;
+  font-size: 1.5rem;
+}
 
 h3 {
   font-size: 2.2rem;

@@ -21,7 +21,7 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
   const getArticleType = (routeName: string): ArticleType => {
     const typeMap: Record<string, ArticleType> = {
       'lunyu': 'lunyu',
-      'shijing': 'shijing', 
+      'shijing': 'shijing',
       'yuanqu': 'yuanqu',
       'caocao': 'caocao',
       'youmengying': 'youmengying',
@@ -30,7 +30,8 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
     return typeMap[routeName] || 'lunyu'
   }
 
-  onMounted(async () => {
+  // 获取数据的函数
+  const fetchData = async () => {
     loading.value = true
 
     const routeName = route.name as TRouteName
@@ -41,13 +42,24 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
 
     if (res) {
       data.value = res
-      
+
       // 如果需要扁平化
       if (options.flatten) {
         const articleType = options.articleType || getArticleType(routeName as string)
         flattenedData.value = flattenArticles(res, articleType)
       }
     }
+  }
+
+  // 监听路由变化
+  watch(() => route.name, (newName, oldName) => {
+    if (newName !== oldName) {
+      fetchData()
+    }
+  })
+
+  onMounted(async () => {
+    await fetchData()
   })
 
   return {
@@ -57,4 +69,4 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
   }
 }
 
-export default useArticle 
+export default useArticle

@@ -7,11 +7,8 @@ const activeRoute = useRoute()
 const router = useRouter()
 
 const handleNavigate = (route: RouteRecordRaw) => {
-  if (activeRoute.name === route.name) {
-    router.push('/')
-  } else {
-    router.push(route.path)
-  }
+  // 直接导航到目标路由，不使用复杂的判断逻辑
+  router.push(route.path)
 }
 </script>
   <template>
