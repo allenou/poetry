@@ -2,20 +2,20 @@
 import useArticle from "@/hooks/useArticle";
 import type { TYouMengYing } from "@/typings";
 
-const { data: articles, loading } = useArticle<TYouMengYing[]>([])
+const { flattenedData, loading } = useArticle<TYouMengYing[]>([], { 
+  flatten: true, 
+  articleType: 'youmengying' 
+})
 </script>
 
 <template>
   <Article :loading="loading">
-    <section v-for="(article, i) in articles" :key="i">
-      <div class="line">
-        <h4>
-          {{ article.content }}
-        </h4>
-      </div>
-      <div class="line" v-for="(line, j) in article.comment" :key="j">
-        {{ line }}
-      </div>
-    </section>
+    <VirtualList 
+      v-if="!loading"
+      :items="flattenedData"
+      article-type="youmengying"
+      :container-height="600"
+      :item-height="100"
+    />
   </Article>
 </template>

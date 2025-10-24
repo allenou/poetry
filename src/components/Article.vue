@@ -16,33 +16,38 @@ defineProps({
 
 <style  lang="scss">
 .wrap {
-  overflow: scroll;
-  max-width: 89vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
   max-height: 95vh;
   @apply border-2 border-red-500;
 }
 
 article {
-  letter-spacing: 20px;
-  writing-mode: vertical-lr;
+  letter-spacing: 2px;
+  line-height: 1.8;
 }
 
 h2 {
-  @apply text-5xl;
+  @apply text-4xl;
   font-weight: 800;
+  margin-bottom: 1rem;
 }
 
 h3 {
-  @apply text-4xl;
+  @apply text-3xl;
   font-weight: 700;
+  margin-bottom: 0.8rem;
 }
 
 h4 {
-  @apply text-3xl;
+  @apply text-2xl;
   font-weight: 600;
+  margin-bottom: 0.6rem;
 }
 
 .line {
-  @apply border-r-1 border-red-500 px-4 py-6 whitespace-nowrap text-xl;
+  @apply border-b-1 border-red-500 px-4 py-3 text-lg;
+  margin-bottom: 0.5rem;
 }
 </style>

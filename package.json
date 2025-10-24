@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@unocss/preset-wind3": "^66.5.4",
+    "@vueuse/core": "^14.0.0",
     "axios": "^1.12.2",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"

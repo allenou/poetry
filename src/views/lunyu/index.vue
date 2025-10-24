@@ -2,20 +2,21 @@
 import useArticle from "@/hooks/useArticle";
 import type { TLunYu } from "@/typings";
 
-const { data: articles, loading } = useArticle<TLunYu[]>([])
+const { flattenedData, loading } = useArticle<TLunYu[]>([], { 
+  flatten: true, 
+  articleType: 'lunyu' 
+})
+
 </script>
 
 <template>
   <Article :loading="loading">
-    <section v-for="(article, i) in articles" :key="i">
-      <div class="line">
-        <h4>
-          {{ article.chapter }}
-        </h4>
-      </div>
-      <div class="line" v-for="(line, j) in article.paragraphs" :key="j">
-        {{ line }}
-      </div>
-    </section>
+    <VirtualList 
+      v-if="!loading && flattenedData.length > 0"
+      :items="flattenedData"
+      article-type="lunyu"
+      :container-height="600"
+      :item-height="100"
+    />
   </Article>
 </template>

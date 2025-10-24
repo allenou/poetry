@@ -1,51 +1,44 @@
 <script setup lang="ts">
 import request from "@/utils/request";
 import { PATHS } from "@/config";
+import { flattenSiShuWuJing } from "@/utils/flattenArticles";
 import type { TMenZi, TSiShuWuJing } from "@/typings";
 
-let daxue = ref<TSiShuWuJing>({ chapter: '', paragraphs: [] });
-let zhongyong = ref<TSiShuWuJing>({ chapter: '', paragraphs: [] });
-let mengzi = ref<TMenZi[]>([]);
+const loading = ref(false)
+const flattenedData = ref<any[]>([])
 
 onMounted(async () => {
-  daxue.value = await request<TSiShuWuJing>(PATHS.daxue) || { chapter: '', paragraphs: [] };
-  console.log(daxue.value);
-
-  zhongyong.value = await request<TSiShuWuJing>(PATHS.zhongyong) || { chapter: '', paragraphs: [] };
-  mengzi.value = await request<TMenZi[]>(PATHS.mengzi) || [];
+  loading.value = true
+  
+  try {
+    const [daxue, zhongyong, mengzi] = await Promise.all([
+      request<TSiShuWuJing>(PATHS.daxue) || { chapter: '', paragraphs: [] },
+      request<TSiShuWuJing>(PATHS.zhongyong) || { chapter: '', paragraphs: [] },
+      request<TMenZi[]>(PATHS.mengzi) || []
+    ])
+    
+    // 扁平化数据
+    flattenedData.value = flattenSiShuWuJing({ 
+      daxue: daxue || { chapter: '', paragraphs: [] }, 
+      zhongyong: zhongyong || { chapter: '', paragraphs: [] }, 
+      mengzi: mengzi || [] 
+    })
+  } catch (error) {
+    console.error('加载四书五经数据失败:', error)
+  } finally {
+    loading.value = false
+  }
 })
 </script>
   
 <template>
-  <Article>
-    <section>
-      <div class="line">
-        <h4>{{ daxue.chapter }}</h4>
-      </div>
-      <div class="line" v-for="(line, i) in daxue.paragraphs" :key="i">
-        {{ line }}
-      </div>
-    </section>
-    <section>
-      <div class="line">
-        <h4>{{ zhongyong.chapter }}</h4>
-      </div>
-      <div class="line" v-for="(line, i) in zhongyong.paragraphs" :key="i">
-        {{ line }}
-      </div>
-    </section>
-    <section>
-      <div class="line">
-        <h3>孟子</h3>
-      </div>
-      <div v-for="(article, i) in mengzi" :key="i">
-        <div class="line">
-          <h4> {{ article.chapter }}</h4>
-        </div>
-        <div class="line" v-for="(line, j) in article.paragraphs" :key="j">
-          {{ line }}
-        </div>
-      </div>
-    </section>
+  <Article :loading="loading">
+    <VirtualList 
+      v-if="!loading"
+      :items="flattenedData"
+      article-type="sishuwujing"
+      :container-height="600"
+      :item-height="100"
+    />
   </Article>
 </template>

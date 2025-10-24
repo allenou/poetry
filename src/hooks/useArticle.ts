@@ -1,12 +1,34 @@
 import { PATHS } from "@/config"
 import request from "@/utils/request"
+import { flattenArticles, type FlattenedItem } from "@/utils/flattenArticles"
 
 export type TRouteName = keyof typeof PATHS
 
-function useArticle<T>(defaultData?: T) {
+export type ArticleType = 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
+
+interface UseArticleOptions {
+  flatten?: boolean
+  articleType?: ArticleType
+}
+
+function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
   const route = useRoute()
   const loading = ref(false)
   const data = ref(defaultData)
+  const flattenedData = ref<FlattenedItem[]>([])
+
+  // 获取文章类型
+  const getArticleType = (routeName: string): ArticleType => {
+    const typeMap: Record<string, ArticleType> = {
+      'lunyu': 'lunyu',
+      'shijing': 'shijing', 
+      'yuanqu': 'yuanqu',
+      'caocao': 'caocao',
+      'youmengying': 'youmengying',
+      'sishuwujing': 'sishuwujing'
+    }
+    return typeMap[routeName] || 'lunyu'
+  }
 
   onMounted(async () => {
     loading.value = true
@@ -17,12 +39,21 @@ function useArticle<T>(defaultData?: T) {
 
     loading.value = false
 
-    if (res) data.value = res
+    if (res) {
+      data.value = res
+      
+      // 如果需要扁平化
+      if (options.flatten) {
+        const articleType = options.articleType || getArticleType(routeName as string)
+        flattenedData.value = flattenArticles(res, articleType)
+      }
+    }
   })
 
   return {
     loading,
-    data
+    data,
+    flattenedData
   }
 }
 
