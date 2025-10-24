@@ -81,8 +81,8 @@ const getHeadingTag = (level: number) => {
 .article-renderer {
   min-height: 60px;
   padding: 0.5rem;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
+  /* background: #f9f9f9; */
+  /* border: 1px solid #ddd; */
   margin: 0.25rem 0;
 }
 
