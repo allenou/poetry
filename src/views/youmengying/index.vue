@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useArticle from "@/hooks/useArticle";
+import type { TYouMengYing } from "@/typings";
 
-const { data: articles, loading } = useArticle()
+const { data: articles, loading } = useArticle<TYouMengYing[]>([])
 </script>
 
 <template>

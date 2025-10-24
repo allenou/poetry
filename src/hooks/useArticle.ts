@@ -13,7 +13,7 @@ function useArticle<T>(defaultData?: T) {
 
     const routeName = route.name as TRouteName
     const url = `${PATHS[routeName]}`
-    const res = await request<T>(url)
+    const res = await request<T[]>(url)
 
     loading.value = false
 

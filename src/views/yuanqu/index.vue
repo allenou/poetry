@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useArticle from "@/hooks/useArticle";
-import type { TAuthor } from "@/typings";
+import type { TAuthor, TYuanQu } from "@/typings";
 
-const { data: articles, loading } = useArticle()
+const { data: articles, loading } = useArticle<TYuanQu[]>([])
 
 const yuanqu = computed(() => {
   let authors: TAuthor = {}

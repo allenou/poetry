@@ -3,16 +3,16 @@ import request from "@/utils/request";
 import { PATHS } from "@/config";
 import type { TMenZi, TSiShuWuJing } from "@/typings";
 
-let daxue = ref<TSiShuWuJing>({});
-let zhongyong = ref<TSiShuWuJing>({});
+let daxue = ref<TSiShuWuJing>({ chapter: '', paragraphs: [] });
+let zhongyong = ref<TSiShuWuJing>({ chapter: '', paragraphs: [] });
 let mengzi = ref<TMenZi[]>([]);
 
 onMounted(async () => {
-  daxue.value = await request(PATHS.daxue);
+  daxue.value = await request<TSiShuWuJing>(PATHS.daxue) || { chapter: '', paragraphs: [] };
   console.log(daxue.value);
-  
-  zhongyong.value = await request(PATHS.zhongyong);
-  mengzi.value = await request(PATHS.mengzi)
+
+  zhongyong.value = await request<TSiShuWuJing>(PATHS.zhongyong) || { chapter: '', paragraphs: [] };
+  mengzi.value = await request<TMenZi[]>(PATHS.mengzi) || [];
 })
 </script>
   
