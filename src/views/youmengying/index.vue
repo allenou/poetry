@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import useArticle from '@/hooks/useArticle'
-import { useRouter } from 'vue-router'
 import type { ArticleType } from '@/hooks/useArticle'
-
-const router = useRouter()
+import type { FlattenedItem } from '@/utils/flattenArticles'
 
 // 获取幽梦影数据
 const { flattenedData, loading } = useArticle([], {
@@ -11,15 +9,22 @@ const { flattenedData, loading } = useArticle([], {
   articleType: 'youmengying'
 })
 
-// 点击内容项进入详情
-const handleContentClick = (item: any) => {
-  // 直接跳转到作品详情页
-  router.push({
-    path: `/youmengying/work/${encodeURIComponent(item.title)}`,
-    query: {
-      content: JSON.stringify(item.content)
-    }
-  })
+const getCommentLines = (item: FlattenedItem): string[] => {
+  if (Array.isArray(item.content) && item.content.length > 0) {
+    return item.content
+  }
+
+  const data = item.data || {}
+
+  if (Array.isArray(data.comment) && data.comment.length > 0) {
+    return data.comment
+  }
+
+  if (Array.isArray(data.paragraphs) && data.paragraphs.length > 0) {
+    return data.paragraphs
+  }
+
+  return []
 }
 </script>
 
@@ -38,11 +43,10 @@ const handleContentClick = (item: any) => {
           v-for="item in flattenedData"
           :key="item.id"
           class="content-item"
-          @click="handleContentClick(item)"
         >
           <h4 class="item-title">{{ item.title }}</h4>
-          <div v-if="item.content" class="item-preview">
-            <p v-for="(line, index) in item.content.slice(0, 3)" :key="index">
+          <div v-if="getCommentLines(item).length > 0" class="item-preview">
+            <p v-for="(line, index) in getCommentLines(item)" :key="index">
               {{ line }}
             </p>
           </div>
@@ -94,16 +98,11 @@ const handleContentClick = (item: any) => {
   border-radius: 8px;
   padding: 2rem;
   transition: all 0.3s ease;
-  cursor: pointer;
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(139, 38, 53, 0.15);
     border-color: #d4af37;
-
-    .item-title {
-      color: #d4af37;
-    }
   }
 }
 

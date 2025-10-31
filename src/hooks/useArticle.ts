@@ -1,24 +1,42 @@
 import { PATHS } from "@/config"
 import request from "@/utils/request"
 import { flattenArticles, type FlattenedItem } from "@/utils/flattenArticles"
-
-export type TRouteName = keyof typeof PATHS
+import type { Ref } from "vue"
+import type { TMenZi, TSiShuWuJing } from "@/typings"
 
 export type ArticleType = 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
 
 interface UseArticleOptions {
   flatten?: boolean
-  articleType?: ArticleType
+  articleType?: ArticleType | Ref<ArticleType>
 }
+
+type SiShuWuJingPayload = {
+  daxue: TSiShuWuJing
+  zhongyong: TSiShuWuJing
+  mengzi: TMenZi[]
+}
+
+type CacheEntry = {
+  raw: any
+  flattened?: FlattenedItem[]
+}
+
+const articleCache = new Map<ArticleType, CacheEntry>()
+
+const createEmptySiShuWuJing = (): SiShuWuJingPayload => ({
+  daxue: { chapter: '', paragraphs: [] },
+  zhongyong: { chapter: '', paragraphs: [] },
+  mengzi: []
+})
 
 function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
   const route = useRoute()
   const loading = ref(false)
-  const data = ref(defaultData)
+  const data = ref<any>(defaultData)
   const flattenedData = ref<FlattenedItem[]>([])
 
-  // 获取文章类型
-  const getArticleType = (routeName: string): ArticleType => {
+  const getArticleType = (routeName?: string): ArticleType => {
     const typeMap: Record<string, ArticleType> = {
       'lunyu': 'lunyu',
       'shijing': 'shijing',
@@ -27,40 +45,134 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
       'youmengying': 'youmengying',
       'sishuwujing': 'sishuwujing'
     }
-    return typeMap[routeName] || 'lunyu'
+    return typeMap[routeName ?? ''] || 'lunyu'
   }
 
-  // 获取数据的函数
-  const fetchData = async () => {
-    loading.value = true
+  const resolvedArticleType = computed<ArticleType>(() => {
+    const provided = options.articleType ? unref(options.articleType) : undefined
+    return provided || getArticleType(route.name as string | undefined)
+  })
 
-    const routeName = route.name as TRouteName
-    const url = `${PATHS[routeName]}`
-    const res = await request<T[]>(url)
+  const resolveUrlByArticleType = (articleType: ArticleType) => {
+    if (articleType === 'sishuwujing') return null
+    return PATHS[articleType as keyof typeof PATHS]
+  }
+
+  const fetchSiShuWuJing = async () => {
+    const payload = createEmptySiShuWuJing()
+
+    const [daxue, zhongyong, mengzi] = await Promise.all([
+      request<TSiShuWuJing>(PATHS.daxue),
+      request<TSiShuWuJing>(PATHS.zhongyong),
+      request<TMenZi[]>(PATHS.mengzi)
+    ])
+
+    if (daxue) {
+      payload.daxue = daxue
+    }
+    if (zhongyong) {
+      payload.zhongyong = zhongyong
+    }
+    if (mengzi) {
+      payload.mengzi = mengzi
+    }
+
+    const cacheEntry: CacheEntry = { raw: payload }
+    if (options.flatten) {
+      cacheEntry.flattened = flattenArticles(payload as any, 'sishuwujing')
+      flattenedData.value = cacheEntry.flattened
+    }
+
+    data.value = payload as unknown as T
+    articleCache.set('sishuwujing', cacheEntry)
+    if (!options.flatten) {
+      flattenedData.value = []
+    }
+  }
+
+  const applyCacheEntry = (articleType: ArticleType, entry: CacheEntry) => {
+    data.value = entry.raw as T
+
+    if (options.flatten) {
+      if (!entry.flattened) {
+        entry.flattened = flattenArticles(entry.raw as any, articleType)
+        articleCache.set(articleType, entry)
+      }
+      flattenedData.value = entry.flattened ?? []
+    } else {
+      flattenedData.value = []
+    }
 
     loading.value = false
+    return true
+  }
 
-    if (res) {
-      data.value = res
+  const fetchData = async () => {
+    try {
+      const articleType = resolvedArticleType.value
 
-      // 如果需要扁平化
-      if (options.flatten) {
-        const articleType = options.articleType || getArticleType(routeName as string)
-        flattenedData.value = flattenArticles(res, articleType)
+      const cached = articleCache.get(articleType)
+      if (cached) {
+        applyCacheEntry(articleType, cached)
+        return
       }
+
+      loading.value = true
+
+      if (articleType === 'sishuwujing') {
+        await fetchSiShuWuJing()
+        return
+      }
+
+      const url = resolveUrlByArticleType(articleType) ?? PATHS[route.name as keyof typeof PATHS]
+
+      if (!url) {
+        console.warn(`[useArticle] 未找到 ${articleType} 对应的数据路径`)
+        data.value = defaultData
+        flattenedData.value = []
+        return
+      }
+
+      const res = await request<T[]>(url)
+
+      if (res) {
+        const cacheEntry: CacheEntry = { raw: res }
+        if (options.flatten) {
+          cacheEntry.flattened = flattenArticles(res, articleType)
+          flattenedData.value = cacheEntry.flattened ?? []
+        } else if (flattenedData.value.length > 0) {
+          flattenedData.value = []
+        }
+
+        data.value = res
+        articleCache.set(articleType, cacheEntry)
+
+      } else {
+        data.value = defaultData
+        if (options.flatten) {
+          flattenedData.value = []
+        }
+      }
+    } catch (error) {
+      console.error('[useArticle] 获取数据失败:', error)
+      data.value = defaultData
+      if (options.flatten) {
+        flattenedData.value = []
+      }
+    } finally {
+      loading.value = false
     }
   }
 
-  // 监听路由变化
-  watch(() => route.name, (newName, oldName) => {
-    if (newName !== oldName) {
-      fetchData()
-    }
-  })
+  const fetchSignature = computed(() => `${route.fullPath ?? ''}|${resolvedArticleType.value}`)
 
-  onMounted(async () => {
-    await fetchData()
-  })
+  watch(
+    fetchSignature,
+    () => {
+      fetchData()
+    },
+    { immediate: true }
+  )
 
   return {
     loading,

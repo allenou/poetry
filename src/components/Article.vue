@@ -2,11 +2,17 @@
 defineProps({
   loading: Boolean
 })
+
+const wrapRef = ref<HTMLElement | null>(null)
+
+defineExpose({
+  getScrollElement: () => wrapRef.value
+})
 </script>
 <template>
   <div v-if="loading" text="center">加载中...</div>
   <div v-else px-4 py-4>
-    <div class="wrap">
+    <div class="wrap" ref="wrapRef">
       <article>
         <slot></slot>
       </article>

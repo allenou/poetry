@@ -5,8 +5,8 @@ import type { ArticleType } from '@/hooks/useArticle'
 
 const route = useRoute()
 const router = useRouter()
-const categoryType = route.params.type as ArticleType
-const authorName = decodeURIComponent(route.params.authorName as string)
+const categoryType = computed<ArticleType>(() => (route.params.type as ArticleType) || 'lunyu')
+const authorName = computed(() => decodeURIComponent((route.params.authorName as string) || ''))
 
 // 获取该作者的所有作品
 const { flattenedData, loading } = useArticle([], {
@@ -18,7 +18,7 @@ const { flattenedData, loading } = useArticle([], {
 const authorWorks = computed(() => {
   // 找到该作者的作品（扁平化数据中type为'article'且父级是作者的数据）
   const authorItem = flattenedData.value.find(item =>
-    item.type === 'author' && item.title === authorName
+    item.type === 'author' && item.title === authorName.value
   )
 
   if (!authorItem) return []
@@ -33,17 +33,17 @@ const authorWorks = computed(() => {
 const handleWorkClick = (work: any) => {
   // 这里可以导航到作品详情页，或者展开显示内容
   router.push({
-    path: `/${categoryType}/work/${encodeURIComponent(work.title)}`,
+    path: `/${categoryType.value}/work/${encodeURIComponent(work.title || work.id)}`,
     query: {
-      author: authorName,
-      content: JSON.stringify(work.content)
+      id: work.id,
+      author: authorName.value,
     }
   })
 }
 
 // 返回分类页面
 const goBackToCategory = () => {
-  router.push(`/${categoryType}`)
+  router.push(`/${categoryType.value}`)
 }
 </script>
 

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import useArticle from '@/hooks/useArticle'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import type { ArticleType } from '@/hooks/useArticle'
+import type { FlattenedItem } from '@/utils/flattenArticles'
+
+const categoryScrollCache = new Map<string, number>()
 
 const route = useRoute()
 const router = useRouter()
+const articleRef = ref<{ getScrollElement: () => HTMLElement | null } | null>(null)
 
 // 从路由名称获取分类类型
 const categoryType = computed(() => {
@@ -20,10 +24,62 @@ const categoryType = computed(() => {
   return typeMap[routeName] || 'lunyu'
 })
 
+const createCacheKey = (type: ArticleType | string) => `category:${type}`
+const scrollCacheKey = computed(() => createCacheKey(categoryType.value))
+
+const getScrollContainer = () => articleRef.value?.getScrollElement?.() ?? null
+
+const saveScrollPosition = () => {
+  const container = getScrollContainer()
+  if (!container) return
+  categoryScrollCache.set(scrollCacheKey.value, container.scrollTop)
+}
+
+const restoreScrollPosition = () => {
+  const container = getScrollContainer()
+  if (!container) return
+  const saved = categoryScrollCache.get(scrollCacheKey.value)
+  container.scrollTop = saved ?? 0
+}
+
+const restoreScrollPositionNextTick = () => {
+  nextTick(() => {
+    restoreScrollPosition()
+  })
+}
+
+onActivated(() => {
+  restoreScrollPositionNextTick()
+})
+
+onDeactivated(() => {
+  saveScrollPosition()
+})
+
+onBeforeRouteLeave(() => {
+  saveScrollPosition()
+})
+
 // 获取分类数据
 const { flattenedData, loading } = useArticle([], {
   flatten: true,
-  articleType: categoryType.value
+  articleType: categoryType
+})
+
+watch(categoryType, (newType, oldType) => {
+  if (oldType) {
+    const container = getScrollContainer()
+    if (container) {
+      categoryScrollCache.set(createCacheKey(oldType), container.scrollTop)
+    }
+  }
+  restoreScrollPositionNextTick()
+})
+
+watch(loading, (isLoading) => {
+  if (!isLoading) {
+    restoreScrollPositionNextTick()
+  }
 })
 
 // 判断显示类型
@@ -95,89 +151,171 @@ const shijingGroups = computed(() => {
 // 四书五经按大学、中庸、孟子分组
 const sishuwujingGroups = computed(() => {
   if (displayType.value !== 'sishuwujing-sections') return []
-  
-  const sections = [
-    { name: '大学', items: flattenedData.value.filter(item => item.id.includes('daxue')) },
-    { name: '中庸', items: flattenedData.value.filter(item => item.id.includes('zhongyong')) },
-    { name: '孟子', items: flattenedData.value.filter(item => item.id.includes('mengzi')) }
+
+  const items = flattenedData.value
+
+  const groups = [
+    {
+      name: '大学',
+      items: items.filter(item => item.id === 'daxue-content')
+    },
+    {
+      name: '中庸',
+      items: items.filter(item => item.id === 'zhongyong-content')
+    },
+    {
+      name: '孟子',
+      items: items.filter(item => item.id.startsWith('mengzi-content-'))
+    }
   ]
-  
-  return sections.filter(section => section.items.length > 0)
+
+  return groups.filter(section => section.items.length > 0)
 })
 
 // 直接显示的内容
-const directContent = computed(() => {
+const directContent = computed<FlattenedItem[]>(() => {
   if (displayType.value !== 'direct') return []
-  
-  // 根据不同类型获取直接显示的内容
+
   switch (categoryType.value) {
     case 'caocao':
-      // 曹操诗集直接显示所有诗作
+    case 'yuanqu':
       return flattenedData.value.filter(item => item.type === 'article')
     case 'lunyu':
-      // 论语显示章节
-      return flattenedData.value.filter(item => item.type === 'chapter')
-    case 'yuanqu':
-      // 元曲直接显示所有作品，不按作者分组
-      return flattenedData.value.filter(item => item.type === 'article')
+      return flattenedData.value.filter(item => item.type === 'content')
     case 'youmengying':
-      // 幽梦影显示内容
       return flattenedData.value.filter(item => item.type === 'content')
     default:
       return flattenedData.value
   }
 })
 
+const getItemDisplayTitle = (item: FlattenedItem): string => {
+  if (!item) return '未命名'
+
+  if (categoryType.value === 'sishuwujing') {
+    return item.data?.chapter || item.data?.section || item.title || '四书五经'
+  }
+
+  if (categoryType.value === 'lunyu' && item.type === 'content') {
+    return item.data?.chapter || '论语章节'
+  }
+
+  if (categoryType.value === 'youmengying' && item.type === 'content') {
+    return item.title || item.data?.content || '幽梦影'
+  }
+
+  if (item.title) return item.title
+  if (typeof item.data?.title === 'string' && item.data.title) return item.data.title
+  if (typeof item.data?.chapter === 'string' && item.data.chapter) return item.data.chapter
+  return '未命名'
+}
+
+const getItemPreviewLines = (item: FlattenedItem): string[] => {
+  if (Array.isArray(item.content) && item.content.length > 0) {
+    if (categoryType.value === 'youmengying') {
+      return item.content
+    }
+    return item.content.slice(0, categoryType.value === 'sishuwujing' ? 6 : 3)
+  }
+
+  const data = item.data || {}
+
+  if (Array.isArray(data.paragraphs) && data.paragraphs.length > 0) {
+    if (categoryType.value === 'youmengying') {
+      return data.paragraphs
+    }
+    return data.paragraphs.slice(0, categoryType.value === 'sishuwujing' ? 6 : 3)
+  }
+
+  if (Array.isArray(data.comment) && data.comment.length > 0) {
+    if (categoryType.value === 'youmengying') {
+      return data.comment
+    }
+    return data.comment.slice(0, categoryType.value === 'sishuwujing' ? 6 : 3)
+  }
+
+  if (Array.isArray(data.content) && data.content.length > 0) {
+    if (categoryType.value === 'youmengying') {
+      return data.content
+    }
+    return data.content.slice(0, categoryType.value === 'sishuwujing' ? 6 : 3)
+  }
+
+  if (typeof item.title === 'string' && item.title) {
+    return [item.title]
+  }
+
+  return []
+}
+
+const getItemAuthor = (item: FlattenedItem): string | undefined => {
+  if (typeof item.data?.author === 'string' && item.data.author) {
+    return item.data.author
+  }
+
+  return undefined
+}
+
 // 点击作者进入详情（元曲专用）
 const handleAuthorClick = (authorName: string) => {
   if (categoryType.value === 'yuanqu') {
+    saveScrollPosition()
     router.push(`/${categoryType.value}/author/${encodeURIComponent(authorName)}`)
   }
 }
 
 // 点击内容项进入详情
-const handleContentClick = (item: any) => {
+const handleContentClick = (item: FlattenedItem) => {
+  if (!item?.id) return
+
+  if (categoryType.value === 'youmengying') {
+    return
+  }
+
+  saveScrollPosition()
+
+  const title = getItemDisplayTitle(item)
+  const query: Record<string, string> = { id: item.id }
+
+  const author = getItemAuthor(item)
+  if (author) {
+    query.author = author
+  }
+
   // 根据不同类型处理点击
   switch (categoryType.value) {
     case 'caocao':
       // 曹操诗集直接跳转到作品详情
       router.push({
-        path: `/${categoryType.value}/work/${encodeURIComponent(item.title)}`,
-        query: {
-          content: JSON.stringify(item.content)
-        }
+        path: `/${categoryType.value}/work/${encodeURIComponent(title)}`,
+        query
       })
       break
     case 'lunyu':
     case 'shijing':
     case 'sishuwujing':
       // 这些分类可能需要显示章节内容，暂时显示内容预览
-      if (item.content && item.content.length > 0) {
+      if (
+        (Array.isArray(item.content) && item.content.length > 0) ||
+        (Array.isArray(item.data?.paragraphs) && item.data.paragraphs.length > 0) ||
+        (Array.isArray(item.data?.comment) && item.data.comment.length > 0)
+      ) {
         router.push({
-          path: `/${categoryType.value}/work/${encodeURIComponent(item.title)}`,
-          query: {
-            content: JSON.stringify(item.content)
-          }
+          path: `/${categoryType.value}/work/${encodeURIComponent(title)}`,
+          query
         })
       }
       break
-    case 'youmengying':
-      // 幽梦影直接显示内容
-      router.push({
-        path: `/${categoryType.value}/work/${encodeURIComponent(item.title)}`,
-        query: {
-          content: JSON.stringify(item.content)
-        }
-      })
-      break
     default:
       // 默认处理
-      if (item.content && item.content.length > 0) {
+      if (
+        (Array.isArray(item.content) && item.content.length > 0) ||
+        (Array.isArray(item.data?.paragraphs) && item.data.paragraphs.length > 0) ||
+        (Array.isArray(item.data?.comment) && item.data.comment.length > 0)
+      ) {
         router.push({
-          path: `/${categoryType.value}/work/${encodeURIComponent(item.title)}`,
-          query: {
-            content: JSON.stringify(item.content)
-          }
+          path: `/${categoryType.value}/work/${encodeURIComponent(title)}`,
+          query
         })
       }
   }
@@ -198,7 +336,7 @@ const getCategoryTitle = (type: ArticleType) => {
 </script>
 
 <template>
-  <Article :loading="loading">
+  <Article ref="articleRef" :loading="loading">
     <div class="category-page">
       <header class="category-header">
         <h1 class="category-title">{{ getCategoryTitle(categoryType) }}</h1>
@@ -261,9 +399,9 @@ const getCategoryTitle = (type: ArticleType) => {
               class="content-item"
               @click="handleContentClick(item)"
             >
-              <h4 class="item-title">{{ item.title }}</h4>
-              <div v-if="item.content" class="item-preview">
-                <p v-for="(line, index) in item.content.slice(0, 3)" :key="index">
+              <h4 class="item-title">{{ getItemDisplayTitle(item) }}</h4>
+              <div class="item-preview" v-if="getItemPreviewLines(item).length > 0">
+                <p v-for="(line, index) in getItemPreviewLines(item)" :key="index">
                   {{ line }}
                 </p>
               </div>
@@ -307,12 +445,12 @@ const getCategoryTitle = (type: ArticleType) => {
         <div
           v-for="item in directContent"
           :key="item.id"
-          class="content-item"
-          @click="handleContentClick(item)"
+          :class="['content-item', { 'is-static': categoryType === 'youmengying' }]"
+          @click="categoryType !== 'youmengying' && handleContentClick(item)"
         >
-          <h4 class="item-title">{{ item.title }}</h4>
-          <div v-if="item.content" class="item-preview">
-            <p v-for="(line, index) in item.content.slice(0, 3)" :key="index">
+          <h4 class="item-title">{{ getItemDisplayTitle(item) }}</h4>
+          <div class="item-preview" v-if="getItemPreviewLines(item).length > 0">
+            <p v-for="(line, index) in getItemPreviewLines(item)" :key="index">
               {{ line }}
             </p>
           </div>
@@ -455,6 +593,20 @@ const getCategoryTitle = (type: ArticleType) => {
 
     .item-title {
       color: #d4af37;
+    }
+  }
+
+  &.is-static {
+    cursor: default;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: rgba(139, 38, 53, 0.15);
+
+      .item-title {
+        color: #8b2635;
+      }
     }
   }
 }
