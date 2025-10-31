@@ -1,1 +1,0 @@
-import{r as c,P as i}from"./request-B6VcJUdF.js";import{r as s,h as l,i as f}from"./index-BP1rVrqI.js";function p(o){const r=f(),e=s(!1),t=s(o);return l(async()=>{e.value=!0;const u=r.name,n=`${i[u]}`,a=await c(n);e.value=!1,a&&(t.value=a)}),{loading:e,data:t}}export{p as u};
