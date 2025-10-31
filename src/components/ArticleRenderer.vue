@@ -3,7 +3,7 @@ import type { FlattenedItem } from '@/utils/flattenArticles'
 
 interface Props {
   item: FlattenedItem
-  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
+  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing' | 'chuci'
 }
 
 const props = defineProps<Props>()

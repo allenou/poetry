@@ -40,6 +40,14 @@ export const routes: RouteRecordRaw[] = [
     component: () => import("@/views/category/index.vue"),
   },
   {
+    path: "/chuci",
+    name: "chuci",
+    meta: {
+      title: "楚辞",
+    },
+    component: () => import("@/views/chuci/index.vue"),
+  },
+  {
     path: "/sishuwujing",
     name: "sishuwujing",
     meta: { title: "四书五经" },

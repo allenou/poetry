@@ -4,7 +4,7 @@ import type { FlattenedItem } from '@/utils/flattenArticles'
 
 interface Props {
   items: FlattenedItem[]
-  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
+  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing' | 'chuci'
   containerHeight?: number
   itemHeight?: number
   overscan?: number

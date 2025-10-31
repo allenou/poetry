@@ -8,5 +8,6 @@ export const PATHS = {
   zhongyong: '四书五经/zhongyong.json',
   mengzi: '四书五经/mengzi.json',
   youmengying: '幽梦影/youmengying.json',
-  yuanqu: '元曲/yuanqu.json'
+  yuanqu: '元曲/yuanqu.json',
+  chuci: '楚辞/chuci.json'
 }

@@ -49,3 +49,9 @@ export type TCaoCao = {
   title: string
   paragraphs: string[]
 }
+
+export type TChuCi = {
+  title: string
+  author?: string
+  paragraphs: string[]
+}

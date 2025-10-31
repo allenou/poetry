@@ -19,7 +19,8 @@ const categoryType = computed(() => {
     'yuanqu': 'yuanqu',
     'caocao': 'caocao',
     'youmengying': 'youmengying',
-    'sishuwujing': 'sishuwujing'
+    'sishuwujing': 'sishuwujing',
+    'chuci': 'chuci'
   }
   return typeMap[routeName] || 'lunyu'
 })
@@ -178,6 +179,7 @@ const directContent = computed<FlattenedItem[]>(() => {
 
   switch (categoryType.value) {
     case 'caocao':
+    case 'chuci':
     case 'yuanqu':
       return flattenedData.value.filter(item => item.type === 'article')
     case 'lunyu':
@@ -258,7 +260,7 @@ const getItemAuthor = (item: FlattenedItem): string | undefined => {
 
 // 点击作者进入详情（元曲专用）
 const handleAuthorClick = (authorName: string) => {
-  if (categoryType.value === 'yuanqu') {
+  if (['yuanqu', 'chuci'].includes(categoryType.value)) {
     saveScrollPosition()
     router.push(`/${categoryType.value}/author/${encodeURIComponent(authorName)}`)
   }
@@ -284,16 +286,10 @@ const handleContentClick = (item: FlattenedItem) => {
 
   // 根据不同类型处理点击
   switch (categoryType.value) {
-    case 'caocao':
-      // 曹操诗集直接跳转到作品详情
-      router.push({
-        path: `/${categoryType.value}/work/${encodeURIComponent(title)}`,
-        query
-      })
-      break
     case 'lunyu':
     case 'shijing':
     case 'sishuwujing':
+    case 'chuci':
       // 这些分类可能需要显示章节内容，暂时显示内容预览
       if (
         (Array.isArray(item.content) && item.content.length > 0) ||
@@ -305,6 +301,13 @@ const handleContentClick = (item: FlattenedItem) => {
           query
         })
       }
+      break
+    case 'caocao':
+      // 曹操诗集直接跳转到作品详情
+      router.push({
+        path: `/${categoryType.value}/work/${encodeURIComponent(title)}`,
+        query
+      })
       break
     default:
       // 默认处理
@@ -329,7 +332,8 @@ const getCategoryTitle = (type: ArticleType) => {
     lunyu: '论语',
     caocao: '曹操诗集',
     youmengying: '幽梦影',
-    sishuwujing: '四书五经'
+    sishuwujing: '四书五经',
+    chuci: '楚辞'
   }
   return titles[type] || '古典文学'
 }

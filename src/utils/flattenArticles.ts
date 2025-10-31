@@ -3,6 +3,7 @@ import type {
   TShiJing, 
   TYuanQu, 
   TCaoCao, 
+  TChuCi,
   TYouMengYing,
   TSiShuWuJing,
   TMenZi,
@@ -165,6 +166,45 @@ export function flattenCaoCao(articles: TCaoCao[]): FlattenedItem[] {
   return result
 }
 
+// 楚辞扁平化
+export function flattenChuCi(articles: TChuCi[]): FlattenedItem[] {
+  const result: FlattenedItem[] = []
+
+  const authorGroups: Record<string, TChuCi[]> = {}
+
+  articles.forEach(article => {
+    const author = article.author || '佚名'
+    if (!authorGroups[author]) {
+      authorGroups[author] = []
+    }
+    authorGroups[author].push(article)
+  })
+
+  Object.entries(authorGroups).forEach(([authorName, works], authorIndex) => {
+    result.push({
+      id: `chuci-author-${authorIndex}`,
+      type: 'author',
+      level: 1,
+      title: authorName,
+      data: { author: authorName }
+    })
+
+    works.forEach((work, workIndex) => {
+      result.push({
+        id: `chuci-article-${authorIndex}-${workIndex}`,
+        type: 'article',
+        level: 2,
+        title: work.title,
+        content: work.paragraphs,
+        data: work,
+        parentId: `chuci-author-${authorIndex}`
+      })
+    })
+  })
+
+  return result
+}
+
 // 幽梦影扁平化
 export function flattenYouMengYing(articles: TYouMengYing[]): FlattenedItem[] {
   const result: FlattenedItem[] = []
@@ -265,7 +305,7 @@ export function flattenSiShuWuJing(data: {
 // 通用扁平化函数
 export function flattenArticles<T>(
   articles: T[], 
-  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
+  articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing' | 'chuci'
 ): FlattenedItem[] {
   switch (articleType) {
     case 'lunyu':
@@ -276,6 +316,8 @@ export function flattenArticles<T>(
       return flattenYuanQu(articles as TYuanQu[])
     case 'caocao':
       return flattenCaoCao(articles as TCaoCao[])
+    case 'chuci':
+      return flattenChuCi(articles as TChuCi[])
     case 'youmengying':
       return flattenYouMengYing(articles as TYouMengYing[])
     case 'sishuwujing':

@@ -4,7 +4,7 @@ import { flattenArticles, type FlattenedItem } from "@/utils/flattenArticles"
 import type { Ref } from "vue"
 import type { TMenZi, TSiShuWuJing } from "@/typings"
 
-export type ArticleType = 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing'
+export type ArticleType = 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing' | 'chuci'
 
 interface UseArticleOptions {
   flatten?: boolean
@@ -43,7 +43,8 @@ function useArticle<T>(defaultData?: T, options: UseArticleOptions = {}) {
       'yuanqu': 'yuanqu',
       'caocao': 'caocao',
       'youmengying': 'youmengying',
-      'sishuwujing': 'sishuwujing'
+      'sishuwujing': 'sishuwujing',
+      'chuci': 'chuci'
     }
     return typeMap[routeName ?? ''] || 'lunyu'
   }
