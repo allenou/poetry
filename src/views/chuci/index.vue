@@ -3,6 +3,8 @@ import useArticle from '@/hooks/useArticle'
 import { useRouter } from 'vue-router'
 import type { TChuCi } from '@/typings'
 import type { FlattenedItem } from '@/utils/flattenArticles'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 const router = useRouter()
 
@@ -41,6 +43,8 @@ const handleWorkClick = (item: FlattenedItem) => {
     query
   })
 }
+
+const { enabled: pinyinEnabled } = usePinyin()
 </script>
 
 <template>
@@ -70,7 +74,7 @@ const handleWorkClick = (item: FlattenedItem) => {
             v-for="(line, index) in getPreviewLines(item)"
             :key="index"
           >
-            {{ line }}
+            <PinyinLine :text="line" :enabled="pinyinEnabled" />
           </p>
         </div>
         <!-- <div class="work-card__meta">

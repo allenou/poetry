@@ -2,6 +2,8 @@
 import useArticle from '@/hooks/useArticle'
 import { useRoute, useRouter } from 'vue-router'
 import type { ArticleType } from '@/hooks/useArticle'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -45,6 +47,8 @@ const handleWorkClick = (work: any) => {
 const goBackToCategory = () => {
   router.push(`/${categoryType.value}`)
 }
+
+const { enabled: pinyinEnabled } = usePinyin()
 </script>
 
 <template>
@@ -78,7 +82,7 @@ const goBackToCategory = () => {
               :key="index"
               class="content-line"
             >
-              {{ line }}
+              <PinyinLine :text="line" :enabled="pinyinEnabled" />
             </div>
             <div v-if="(work.content || []).length > 4" class="more-content">
               ... 还有 {{ (work.content || []).length - 4 }} 行

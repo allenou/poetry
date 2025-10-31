@@ -2,6 +2,8 @@
 import useArticle, { type ArticleType } from '@/hooks/useArticle'
 import type { FlattenedItem } from '@/utils/flattenArticles'
 import { useRoute, useRouter } from 'vue-router'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,6 +116,8 @@ const goBackToAuthor = () => {
 const goBackToCategory = () => {
   router.push(`/${categoryType.value}`)
 }
+
+const { enabled: pinyinEnabled } = usePinyin()
 </script>
 
 <template>
@@ -143,7 +147,7 @@ const goBackToCategory = () => {
           :key="index"
           class="content-line"
         >
-          {{ line }}
+          <PinyinLine :text="line" :enabled="pinyinEnabled" />
         </div>
       </div>
       <div v-else-if="!loading" class="no-content">

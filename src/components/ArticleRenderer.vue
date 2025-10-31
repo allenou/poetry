@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { FlattenedItem } from '@/utils/flattenArticles'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 interface Props {
   item: FlattenedItem
@@ -41,6 +43,8 @@ const getHeadingTag = (level: number) => {
       return 'div'
   }
 }
+
+const { enabled } = usePinyin()
 </script>
 
 <template>
@@ -59,20 +63,20 @@ const getHeadingTag = (level: number) => {
       <div 
         v-for="(line, index) in item.content" 
         :key="index"
-        v-memo="[item.id, line, index]"
+        v-memo="[item.id, line, index, enabled]"
         class="line content-line"
       >
-        {{ line }}
+        <PinyinLine :text="line" :enabled="enabled" />
       </div>
     </div>
     
     <!-- 特殊处理：幽梦影的内容作为标题显示 -->
     <div 
       v-if="articleType === 'youmengying' && item.type === 'content'"
-      v-memo="[item.id, item.title, articleType]"
+      v-memo="[item.id, item.title, articleType, enabled]"
       class="line content-title"
     >
-      {{ item.title }}
+      <PinyinLine :text="item.title || ''" :enabled="enabled" />
     </div>
   </div>
 </template>

@@ -2,6 +2,8 @@
 import useArticle from '@/hooks/useArticle'
 import type { ArticleType } from '@/hooks/useArticle'
 import type { FlattenedItem } from '@/utils/flattenArticles'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 // 获取幽梦影数据
 const { flattenedData, loading } = useArticle([], {
@@ -26,6 +28,8 @@ const getCommentLines = (item: FlattenedItem): string[] => {
 
   return []
 }
+
+const { enabled: pinyinEnabled } = usePinyin()
 </script>
 
 <template>
@@ -47,7 +51,7 @@ const getCommentLines = (item: FlattenedItem): string[] => {
           <h4 class="item-title">{{ item.title }}</h4>
           <div v-if="getCommentLines(item).length > 0" class="item-preview">
             <p v-for="(line, index) in getCommentLines(item)" :key="index">
-              {{ line }}
+              <PinyinLine :text="line" :enabled="pinyinEnabled" />
             </p>
           </div>
         </div>

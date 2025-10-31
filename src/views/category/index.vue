@@ -3,6 +3,8 @@ import useArticle from '@/hooks/useArticle'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import type { ArticleType } from '@/hooks/useArticle'
 import type { FlattenedItem } from '@/utils/flattenArticles'
+import usePinyin from '@/hooks/usePinyin'
+import PinyinLine from '@/components/PinyinLine.vue'
 
 const categoryScrollCache = new Map<string, number>()
 
@@ -82,6 +84,8 @@ watch(loading, (isLoading) => {
     restoreScrollPositionNextTick()
   }
 })
+
+const { enabled: pinyinEnabled } = usePinyin()
 
 // 判断显示类型
 const displayType = computed(() => {
@@ -406,7 +410,7 @@ const getCategoryTitle = (type: ArticleType) => {
               <h4 class="item-title">{{ getItemDisplayTitle(item) }}</h4>
               <div class="item-preview" v-if="getItemPreviewLines(item).length > 0">
                 <p v-for="(line, index) in getItemPreviewLines(item)" :key="index">
-                  {{ line }}
+                  <PinyinLine :text="line" :enabled="pinyinEnabled" />
                 </p>
               </div>
             </div>
@@ -455,7 +459,7 @@ const getCategoryTitle = (type: ArticleType) => {
           <h4 class="item-title">{{ getItemDisplayTitle(item) }}</h4>
           <div class="item-preview" v-if="getItemPreviewLines(item).length > 0">
             <p v-for="(line, index) in getItemPreviewLines(item)" :key="index">
-              {{ line }}
+              <PinyinLine :text="line" :enabled="pinyinEnabled" />
             </p>
           </div>
         </div>

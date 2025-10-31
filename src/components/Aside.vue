@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { routes } from '@/router';
-import type { RouteRecordRaw } from 'vue-router';
+import { routes } from '@/router'
+import type { RouteRecordRaw } from 'vue-router'
+import usePinyin from '@/hooks/usePinyin'
 
 const nav = ref(routes)
 const activeRoute = useRoute()
 const router = useRouter()
+const { enabled, toggle } = usePinyin()
 
 const handleNavigate = (route: RouteRecordRaw) => {
   // 直接导航到目标路由，不使用复杂的判断逻辑
   router.push(route.path)
 }
 </script>
-  <template>
+<template>
   <nav class="sidebar">
     <div class="sidebar-header">
       <h1 class="site-title">中文古诗词</h1>
@@ -32,6 +34,23 @@ const handleNavigate = (route: RouteRecordRaw) => {
         </div>
       </li>
     </ul>
+
+    <div class="sidebar-footer">
+      <button
+        class="pinyin-toggle"
+        type="button"
+        :aria-pressed="enabled"
+        @click="toggle"
+      >
+        <div class="toggle-text">
+          <span class="toggle-label">注音</span>
+        </div>
+        <span class="toggle-indicator" :class="{ active: enabled }">
+          <span class="toggle-dot"></span>
+        </span>
+      </button>
+
+    </div>
   </nav>
 </template>
   
@@ -112,6 +131,92 @@ const handleNavigate = (route: RouteRecordRaw) => {
 .nav-title {
   font-size: 1.1rem;
   letter-spacing: 2px;
+}
+
+.sidebar-footer {
+  margin: 2rem 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8f4e9;
+}
+
+.pinyin-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 244, 233, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pinyin-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(248, 244, 233, 0.4);
+}
+
+.pinyin-toggle[aria-pressed='true'] {
+  background: rgba(248, 244, 233, 0.2);
+  border-color: rgba(248, 244, 233, 0.6);
+  box-shadow: 0 6px 18px rgba(248, 244, 233, 0.2);
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.toggle-label {
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.toggle-status {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.toggle-indicator {
+  position: relative;
+  width: 46px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: background 0.3s ease;
+}
+
+.toggle-indicator.active {
+  background: #f6ad55;
+}
+
+.toggle-dot {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.3s ease;
+}
+
+.toggle-indicator.active .toggle-dot {
+  transform: translateX(22px);
+  background: #fff8e6;
+}
+
+.toggle-hint {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  opacity: 0.75;
 }
 
 @media (max-width: 768px) {
