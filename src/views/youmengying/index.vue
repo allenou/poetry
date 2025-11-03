@@ -48,7 +48,9 @@ const { enabled: pinyinEnabled } = usePinyin()
           :key="item.id"
           class="content-item"
         >
-          <h4 class="item-title">{{ item.title }}</h4>
+          <h4 class="item-title">
+            <PinyinLine :text="item.title" :enabled="pinyinEnabled" />
+          </h4>
           <div v-if="getCommentLines(item).length > 0" class="item-preview">
             <p v-for="(line, index) in getCommentLines(item)" :key="index">
               <PinyinLine :text="line" :enabled="pinyinEnabled" />
