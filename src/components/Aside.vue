@@ -2,11 +2,13 @@
 import { routes } from '@/router'
 import type { RouteRecordRaw } from 'vue-router'
 import usePinyin from '@/hooks/usePinyin'
+import useTtsEnabled from '@/hooks/useTtsEnabled'
 
 const nav = ref(routes)
 const activeRoute = useRoute()
 const router = useRouter()
 const { enabled, toggle } = usePinyin()
+const { enabled: ttsEnabled, toggle: toggleTts } = useTtsEnabled()
 
 const handleNavigate = (route: RouteRecordRaw) => {
   // 直接导航到目标路由，不使用复杂的判断逻辑
@@ -50,6 +52,19 @@ const handleNavigate = (route: RouteRecordRaw) => {
         </span>
       </button>
 
+      <button
+        class="tts-toggle"
+        type="button"
+        :aria-pressed="ttsEnabled"
+        @click="toggleTts"
+      >
+        <div class="toggle-text">
+          <span class="toggle-label">朗读</span>
+        </div>
+        <span class="toggle-indicator" :class="{ active: ttsEnabled }">
+          <span class="toggle-dot"></span>
+        </span>
+      </button>
     </div>
   </nav>
 </template>
@@ -140,7 +155,8 @@ const handleNavigate = (route: RouteRecordRaw) => {
   color: #f8f4e9;
 }
 
-.pinyin-toggle {
+.pinyin-toggle,
+.tts-toggle {
   width: 100%;
   display: flex;
   align-items: center;
@@ -155,12 +171,14 @@ const handleNavigate = (route: RouteRecordRaw) => {
   transition: all 0.3s ease;
 }
 
-.pinyin-toggle:hover {
+.pinyin-toggle:hover,
+.tts-toggle:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(248, 244, 233, 0.4);
 }
 
-.pinyin-toggle[aria-pressed='true'] {
+.pinyin-toggle[aria-pressed='true'],
+.tts-toggle[aria-pressed='true'] {
   background: rgba(248, 244, 233, 0.2);
   border-color: rgba(248, 244, 233, 0.6);
   box-shadow: 0 6px 18px rgba(248, 244, 233, 0.2);

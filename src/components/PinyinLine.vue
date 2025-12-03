@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { buildPinyinSegments } from '@/utils/pinyin'
+import useTts from '@/hooks/useTts'
 
 interface Props {
   text: string
   enabled: boolean
+  ttsEnabled?: boolean
 }
 
 const props = defineProps<Props>()
@@ -21,13 +23,46 @@ const showPopover = (index: number) => {
 const hidePopover = () => {
   activePopoverIndex.value = null
 }
+
+// TTS 功能
+const showTtsIcon = ref(false)
+const { canUseTts, isSpeaking, speak, stop } = useTts(props.ttsEnabled)
+
+const handleMouseEnter = () => {
+  if (canUseTts.value && props.text.trim()) {
+    showTtsIcon.value = true
+  }
+  // 多音字 popover 逻辑
+  if (segments.value.some(seg => seg.type === 'ruby' && seg.isPolyphonic)) {
+    // 保持现有的多音字逻辑
+  }
+}
+
+const handleMouseLeave = () => {
+  showTtsIcon.value = false
+  hidePopover()
+}
+
+const handleTtsClick = (event: Event) => {
+  event.stopPropagation()
+  if (isSpeaking.value) {
+    stop()
+  } else {
+    speak(props.text)
+  }
+}
 </script>
 
 <template>
   <span v-if="!enabled">
     {{ text }}
   </span>
-  <span v-else class="pinyin-text">
+  <span
+    v-else
+    class="pinyin-text"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
     <template v-for="(segment, index) in segments" :key="index">
       <span
         v-if="segment.type === 'ruby'"
@@ -58,12 +93,52 @@ const hidePopover = () => {
       </span>
       <span v-else class="pinyin-plain">{{ segment.text }}</span>
     </template>
+    <!-- TTS 朗读图标 -->
+    <button
+      v-if="showTtsIcon && canUseTts"
+      class="tts-icon"
+      @click="handleTtsClick"
+      :title="isSpeaking ? '停止朗读' : '朗读'"
+    >
+      <svg
+        v-if="!isSpeaking"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+      </svg>
+      <svg
+        v-else
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="6" y="4" width="4" height="16"></rect>
+        <rect x="14" y="4" width="4" height="16"></rect>
+      </svg>
+    </button>
   </span>
 </template>
 
 <style scoped>
 .pinyin-text {
   display: inline;
+  position: relative;
 }
 
 .pinyin-ruby {
@@ -139,5 +214,36 @@ const hidePopover = () => {
 .pinyin-option-active:hover {
   background-color: #fde68a;
   color: #d97706;
+}
+
+/* TTS 图标样式 */
+.tts-icon {
+  position: absolute;
+  top: -2px;
+  right: -20px;
+  background: none;
+  border: none;
+  color: #4b5563;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  z-index: 1001;
+}
+
+.tts-icon:hover {
+  color: #1f2937;
+  background-color: #f3f4f6;
+}
+
+.tts-icon:focus {
+  outline: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .tts-icon {
+    right: -18px;
+  }
 }
 </style>

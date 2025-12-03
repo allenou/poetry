@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FlattenedItem } from '@/utils/flattenArticles'
 import usePinyin from '@/hooks/usePinyin'
+import useTtsEnabled from '@/hooks/useTtsEnabled'
 import PinyinLine from '@/components/PinyinLine.vue'
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
   articleType: 'lunyu' | 'shijing' | 'yuanqu' | 'caocao' | 'youmengying' | 'sishuwujing' | 'chuci'
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 // 根据类型和层级渲染不同的样式
 const getItemClass = (item: FlattenedItem) => {
@@ -45,6 +46,7 @@ const getHeadingTag = (level: number) => {
 }
 
 const { enabled } = usePinyin()
+const { enabled: ttsEnabled } = useTtsEnabled()
 </script>
 
 <template>
@@ -66,7 +68,7 @@ const { enabled } = usePinyin()
         v-memo="[item.id, line, index, enabled]"
         class="line content-line"
       >
-        <PinyinLine :text="line" :enabled="enabled" />
+        <PinyinLine :text="line" :enabled="enabled" :tts-enabled="ttsEnabled" />
       </div>
     </div>
     
@@ -76,7 +78,7 @@ const { enabled } = usePinyin()
       v-memo="[item.id, item.title, articleType, enabled]"
       class="line content-title"
     >
-      <PinyinLine :text="item.title || ''" :enabled="enabled" />
+      <PinyinLine :text="item.title || ''" :enabled="enabled" :tts-enabled="ttsEnabled" />
     </div>
   </div>
 </template>

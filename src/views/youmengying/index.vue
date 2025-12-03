@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useArticle from '@/hooks/useArticle'
-import type { ArticleType } from '@/hooks/useArticle'
 import type { FlattenedItem } from '@/utils/flattenArticles'
 import usePinyin from '@/hooks/usePinyin'
+import useTtsEnabled from '@/hooks/useTtsEnabled'
 import PinyinLine from '@/components/PinyinLine.vue'
 
 // 获取幽梦影数据
@@ -30,6 +30,7 @@ const getCommentLines = (item: FlattenedItem): string[] => {
 }
 
 const { enabled: pinyinEnabled } = usePinyin()
+const { enabled: ttsEnabled } = useTtsEnabled()
 </script>
 
 <template>
@@ -49,11 +50,19 @@ const { enabled: pinyinEnabled } = usePinyin()
           class="content-item"
         >
           <h4 class="item-title">
-            <PinyinLine :text="item.title" :enabled="pinyinEnabled" />
+            <PinyinLine
+              :text="item.title"
+              :enabled="pinyinEnabled"
+              :tts-enabled="ttsEnabled"
+            />
           </h4>
           <div v-if="getCommentLines(item).length > 0" class="item-preview">
             <p v-for="(line, index) in getCommentLines(item)" :key="index">
-              <PinyinLine :text="line" :enabled="pinyinEnabled" />
+              <PinyinLine
+                :text="line"
+                :enabled="pinyinEnabled"
+                :tts-enabled="ttsEnabled"
+              />
             </p>
           </div>
         </div>
@@ -77,6 +86,7 @@ const { enabled: pinyinEnabled } = usePinyin()
   margin-bottom: 3rem;
   padding: 2rem 0;
   border-bottom: 2px solid #d4af37;
+  position: relative;
 }
 
 .youmengying-title {
@@ -91,6 +101,48 @@ const { enabled: pinyinEnabled } = usePinyin()
   font-size: 1.2rem;
   color: #6b1c28;
   letter-spacing: 2px;
+}
+
+/* TTS 控制区域 */
+.tts-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tts-global-btn {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #d97706;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.tts-global-btn:hover {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+
+.tts-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b1c28;
+  font-size: 0.9rem;
+}
+
+.tts-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 .content-list {
